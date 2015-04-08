@@ -5,4 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="AddNewItemHint">Add a new item</string>
     <string name="AddButtonText">Add</string>
+    <string name="title_activity_edit_item">EditItemActivity</string>
+    <string name="EditHeader">Edit item below:</string>
+    <string name="EditSaveButtonText">Save</string>
 </resources>

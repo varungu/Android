@@ -1,5 +1,6 @@
 package varungu.simpletodolist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
+    private final int REQUEST_CODE = 20;
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView itemsListView;
@@ -34,6 +36,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void setupListViewListener(){
+        itemsListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
+                        intent.putExtra("position", position);
+                        intent.putExtra("value", items.get(position));
+                        startActivityForResult(intent, REQUEST_CODE);
+                    }
+                }
+        );
         itemsListView.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
@@ -81,6 +94,22 @@ public class MainActivity extends ActionBarActivity {
         addNewItemTextbox.setText("");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            String value = data.getExtras().getString("value");
+            int position = data.getExtras().getInt("position", 0);
+
+            //Update item
+            items.remove(position);
+            itemsAdapter.notifyDataSetChanged();
+            itemsAdapter.insert(value,position);
+            writeItems();
+        }
+    }
+
     private void readItems()
     {
         File filesDir = getFilesDir();
@@ -104,4 +133,6 @@ public class MainActivity extends ActionBarActivity {
             e.printStackTrace();
         }
     }
+
+
 }
