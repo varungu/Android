@@ -1,17 +1,30 @@
 package varungu.simpletodolist;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
+    ArrayList<String> items;
+    ArrayAdapter<String> itemsAdapter;
+    ListView itemsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        itemsListView = (ListView) findViewById(R.id.itemsListView);
+        items = new ArrayList<>();
+        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        itemsListView.setAdapter(itemsAdapter);
     }
 
 
@@ -35,5 +48,16 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickAdd(View view)
+    {
+        EditText addNewItemTextbox = (EditText) findViewById(R.id.addTextField);
+        String textToAdd = addNewItemTextbox.getText().toString().trim();
+        if (!textToAdd.equals(""))
+        {
+            itemsAdapter.add(textToAdd);
+        }
+        addNewItemTextbox.setText("");
     }
 }
