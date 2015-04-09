@@ -11,10 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -23,12 +19,14 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView itemsListView;
+    TodoItemDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         itemsListView = (ListView) findViewById(R.id.itemsListView);
+        database = new TodoItemDatabase(this);
         readItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         itemsListView.setAdapter(itemsAdapter);
@@ -51,9 +49,9 @@ public class MainActivity extends ActionBarActivity {
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        database.deleteValue(items.get(position));
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
-                        writeItems();
                         return true;
                     }
                 }
@@ -89,7 +87,7 @@ public class MainActivity extends ActionBarActivity {
         if (!textToAdd.equals(""))
         {
             itemsAdapter.add(textToAdd);
-            writeItems();
+            database.addValue(textToAdd);
         }
         addNewItemTextbox.setText("");
     }
@@ -103,36 +101,21 @@ public class MainActivity extends ActionBarActivity {
             int position = data.getExtras().getInt("position", 0);
 
             //Update item
+            database.deleteValue(items.get(position));
             items.remove(position);
             itemsAdapter.notifyDataSetChanged();
             itemsAdapter.insert(value,position);
-            writeItems();
+            database.addValue(value);
         }
     }
 
     private void readItems()
     {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
         try {
-            items = new ArrayList<String>(FileUtils.readLines(todoFile));
+            items = database.getAllValues();
         }
-        catch (IOException e) {
+        catch (Exception e) {
             items = new ArrayList<String>();
         }
     }
-
-    private void writeItems()
-    {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
-        try {
-            FileUtils.writeLines(todoFile, items);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }
