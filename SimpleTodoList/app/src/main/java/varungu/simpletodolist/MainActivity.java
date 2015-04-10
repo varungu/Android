@@ -19,6 +19,7 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<Item> items;
     ItemsAdapter itemsAdapter;
     ListView itemsListView;
+    ItemDatabase database;
     int maxId;
 
     @Override
@@ -26,11 +27,29 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         itemsListView = (ListView) findViewById(R.id.itemsListView);
-        items = new ArrayList<Item>();
-        maxId = 0;
+        database = new ItemDatabase(this);
+        ReadItems();
         itemsAdapter = new ItemsAdapter(this, items);
         itemsListView.setAdapter(itemsAdapter);
         setupListViewListener();
+    }
+
+    private void ReadItems()
+    {
+        maxId = 0;
+        try {
+            items = database.getAllItems();
+            for (int i = 0; i < items.size(); i++)
+            {
+                if (maxId <= items.get(i).id)
+                {
+                    maxId = items.get(i).id + 1;
+                }
+            }
+        }
+        catch (Exception e) {
+            items = new ArrayList<Item>();
+        }
     }
 
     private void setupListViewListener(){
@@ -50,6 +69,10 @@ public class MainActivity extends ActionBarActivity {
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        Item item = items.get(position);
+                        database.deleteItem(item.id);
+
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
                         return true;
@@ -86,7 +109,9 @@ public class MainActivity extends ActionBarActivity {
         String textToAdd = addNewItemTextbox.getText().toString().trim();
         if (!textToAdd.equals(""))
         {
-            itemsAdapter.add(new Item(maxId++, textToAdd));
+            Item item = new Item(maxId++, textToAdd);
+            itemsAdapter.add(item);
+            database.addItem(item);
         }
         addNewItemTextbox.setText("");
     }
@@ -104,6 +129,8 @@ public class MainActivity extends ActionBarActivity {
             Item item = items.get(position);
             item.value = value;
             item.dueDate = dueDate;
+
+            database.UpdateItem(item);
             itemsAdapter.notifyDataSetChanged();
         }
     }

@@ -16,4 +16,12 @@ public class Item{
         this.value = value;
         this.dueDate = new Date();
     }
+
+    public Item(int id, String value, Date dueDate)
+    {
+        this.id = id;
+        this.value = value;
+        this.dueDate = dueDate;
+    }
 }
+
