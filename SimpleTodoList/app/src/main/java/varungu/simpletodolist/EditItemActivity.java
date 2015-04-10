@@ -8,11 +8,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class EditItemActivity extends ActionBarActivity {
 
     String itemText;
     int position;
+    Date dueDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +25,13 @@ public class EditItemActivity extends ActionBarActivity {
         setContentView(R.layout.activity_edit_item);
         position = getIntent().getIntExtra("position", 0);
         itemText = getIntent().getStringExtra("value");
+        dueDate = (Date)getIntent().getSerializableExtra("dueDate");
 
         EditText editTextField = (EditText) findViewById(R.id.editTextView);
         editTextField.setText(itemText);
+
+        EditText dueDateField = (EditText) findViewById(R.id.dueDateView);
+        dueDateField.setText(new SimpleDateFormat("MM/dd/yyy").format(dueDate));
     }
 
 
@@ -50,14 +59,23 @@ public class EditItemActivity extends ActionBarActivity {
 
     public void onClickSave(View view)
     {
-        EditText editTextField = (EditText) findViewById(R.id.editTextView);
-        String updatedText = editTextField.getText().toString().trim();
-        if (!updatedText.equals("")) {
-            Intent data = new Intent();
-            data.putExtra("value", updatedText);
-            data.putExtra("position", position);
-            setResult(RESULT_OK, data); // set result code and bundle data for response
-            finish(); // closes the activity, pass data to parent
+        try {
+            EditText editTextField = (EditText) findViewById(R.id.editTextView);
+            String updatedText = editTextField.getText().toString().trim();
+
+            EditText dueDateField = (EditText) findViewById(R.id.dueDateView);
+            dueDate = new SimpleDateFormat("MM/dd/yyy").parse(dueDateField.getText().toString().trim());
+            if (!updatedText.equals("")) {
+                Intent data = new Intent();
+                data.putExtra("value", updatedText);
+                data.putExtra("position", position);
+                data.putExtra("dueDate", dueDate);
+                setResult(RESULT_OK, data); // set result code and bundle data for response
+                finish(); // closes the activity, pass data to parent
+            }
+        }
+        catch (ParseException e) {
+            // Show some error message here
         }
     }
 }

@@ -7,28 +7,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
     private final int REQUEST_CODE = 20;
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
+    ArrayList<Item> items;
+    ItemsAdapter itemsAdapter;
     ListView itemsListView;
-    TodoItemDatabase database;
+    int maxId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         itemsListView = (ListView) findViewById(R.id.itemsListView);
-        database = new TodoItemDatabase(this);
-        readItems();
-        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        items = new ArrayList<Item>();
+        maxId = 0;
+        itemsAdapter = new ItemsAdapter(this, items);
         itemsListView.setAdapter(itemsAdapter);
         setupListViewListener();
     }
@@ -40,7 +40,8 @@ public class MainActivity extends ActionBarActivity {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent(MainActivity.this, EditItemActivity.class);
                         intent.putExtra("position", position);
-                        intent.putExtra("value", items.get(position));
+                        intent.putExtra("value", items.get(position).value);
+                        intent.putExtra("dueDate", items.get(position).dueDate);
                         startActivityForResult(intent, REQUEST_CODE);
                     }
                 }
@@ -49,7 +50,6 @@ public class MainActivity extends ActionBarActivity {
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        database.deleteValue(items.get(position));
                         items.remove(position);
                         itemsAdapter.notifyDataSetChanged();
                         return true;
@@ -86,8 +86,7 @@ public class MainActivity extends ActionBarActivity {
         String textToAdd = addNewItemTextbox.getText().toString().trim();
         if (!textToAdd.equals(""))
         {
-            itemsAdapter.add(textToAdd);
-            database.addValue(textToAdd);
+            itemsAdapter.add(new Item(maxId++, textToAdd));
         }
         addNewItemTextbox.setText("");
     }
@@ -98,24 +97,14 @@ public class MainActivity extends ActionBarActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
             String value = data.getExtras().getString("value");
+            Date dueDate = (Date)data.getExtras().getSerializable("dueDate");
             int position = data.getExtras().getInt("position", 0);
 
             //Update item
-            database.deleteValue(items.get(position));
-            items.remove(position);
+            Item item = items.get(position);
+            item.value = value;
+            item.dueDate = dueDate;
             itemsAdapter.notifyDataSetChanged();
-            itemsAdapter.insert(value,position);
-            database.addValue(value);
-        }
-    }
-
-    private void readItems()
-    {
-        try {
-            items = database.getAllValues();
-        }
-        catch (Exception e) {
-            items = new ArrayList<String>();
         }
     }
 }

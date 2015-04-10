@@ -8,4 +8,5 @@
     <string name="title_activity_edit_item">EditItemActivity</string>
     <string name="EditHeader">Edit item below:</string>
     <string name="EditSaveButtonText">Save</string>
+    <string name="DueDate">Due date:</string>
 </resources>
