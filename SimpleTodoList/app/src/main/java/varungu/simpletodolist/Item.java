@@ -1,11 +1,12 @@
 package varungu.simpletodolist;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Varun on 4/10/2015.
  */
-public class Item{
+public class Item implements Serializable {
     public int id;
     public String value;
     public Date dueDate;
