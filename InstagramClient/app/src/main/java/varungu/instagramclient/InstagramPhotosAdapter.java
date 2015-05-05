@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
-        super(context, android.R.layout.simple_expandable_list_item_1, objects);
+        super(context, R.layout.item_photo, objects);
     }
 
     @Override
