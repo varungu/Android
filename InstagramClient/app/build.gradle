@@ -27,4 +27,5 @@ dependencies {
     // Load photos
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:support-v4:22.0.0'
+    compile 'de.hdodenhof:circleimageview:1.2.2'
 }
