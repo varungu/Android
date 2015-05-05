@@ -62,6 +62,7 @@ public class PhotosActivity extends ActionBarActivity {
                         "type": "image",
                         "user": {
                             "username": "tameramowrytwo",
+                            "profile_picture": "https:\/\/igcdn-photos-c-a.akamaihd.net\/hphotos-ak-xpf1\/t51.2885-19\/11005183_1544003252539498_2082156619_a.jpg",
                         }
                     }
                      */
@@ -71,6 +72,7 @@ public class PhotosActivity extends ActionBarActivity {
                         if (photoJson.getString("type").equals("image")) {
                             InstagramPhoto photo = new InstagramPhoto();
                             photo.username = photoJson.getJSONObject("user").getString("username");
+                            photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
                             photo.caption = photoJson.getJSONObject("caption").getString("text");
                             photo.imageUrl = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
                             photo.imageHeight = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");

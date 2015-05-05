@@ -5,6 +5,7 @@ package varungu.instagramclient;
  */
 public class InstagramPhoto {
     public String username;
+    public String profilePhotoUrl;
     public String caption;
     public String imageUrl;
     public int imageHeight;

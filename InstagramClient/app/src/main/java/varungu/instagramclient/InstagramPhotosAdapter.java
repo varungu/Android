@@ -26,16 +26,25 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
         }
-        TextView tvCaption = (TextView) convertView.findViewById(R.id.text);
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.image);
 
-        tvCaption.setText(photo.caption);
+        // Load profile photo
+        // ivProfilePhoto.setImageResource(0) will clear the last image in case convertView is reused
+        ImageView ivProfilePhoto = (ImageView) convertView.findViewById(R.id.ivProfilePhoto);
+        ivProfilePhoto.setImageResource(0);
+        Picasso.with(getContext()).load(photo.profilePhotoUrl).into(ivProfilePhoto);
 
-        // Clear last image
+        // Set username
+        TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
+        tvUsername.setText(photo.username);
+
+        // Set image
+        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivImage);
         ivPhoto.setImageResource(0);
-
-        // Insert image view using picasso
         Picasso.with(getContext()).load(photo.imageUrl).into(ivPhoto);
+
+        // Set caption
+        TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
+        tvCaption.setText(photo.caption);
 
         return convertView;
     }
