@@ -51,6 +51,6 @@
         android:gravity="center"
         android:height="80dp"
         android:textSize="20dp"
-        android:textColor="#ff517fa4" />
+        android:textColor="#41739C" />
 
 </RelativeLayout>
