@@ -1,5 +1,6 @@
 package varungu.instagramclient;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,8 @@ public class PhotosActivity extends ActionBarActivity {
 
     private ArrayList<InstagramPhoto> photos;
     private InstagramPhotosAdapter instagramPhotosAdapter;
+    private SwipeRefreshLayout swipeContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,25 @@ public class PhotosActivity extends ActionBarActivity {
         ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
         lvPhotos.setAdapter(instagramPhotosAdapter);
         fetchPopularPhotos();
+
+        // Add swipe to refresh
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchPopularPhotos();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
     }
 
     public void fetchPopularPhotos() {
@@ -66,22 +88,23 @@ public class PhotosActivity extends ActionBarActivity {
                         }
                     }
                      */
+
+                    // Remove old items before adding new ones
+                    instagramPhotosAdapter.clear();
                     JSONArray dataJsonArray = response.getJSONArray("data");
                     for (int i = 0; i < dataJsonArray.length(); i++) {
                         JSONObject photoJson = dataJsonArray.getJSONObject(i);
-                        if (photoJson.getString("type").equals("image")) {
-                            InstagramPhoto photo = new InstagramPhoto();
-                            photo.username = photoJson.getJSONObject("user").getString("username");
-                            photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
-                            photo.caption = photoJson.getJSONObject("caption").getString("text");
-                            photo.imageUrl = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
-                            photo.imageHeight = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
-                            photo.imageWidth = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("width");
-                            photo.likesCount = photoJson.getJSONObject("likes").getInt("count");
+                        InstagramPhoto photo = new InstagramPhoto();
+                        photo.username = photoJson.getJSONObject("user").getString("username");
+                        photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
+                        photo.caption = photoJson.getJSONObject("caption").getString("text");
+                        photo.imageUrl = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
+                        photo.imageHeight = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
+                        photo.imageWidth = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("width");
+                        photo.likesCount = photoJson.getJSONObject("likes").getInt("count");
 
-                            // Add to array list
-                            photos.add(photo);
-                        }
+                        // Add to array list
+                        photos.add(photo);
                     }
                 }
                 catch (JSONException e) {
@@ -89,6 +112,9 @@ public class PhotosActivity extends ActionBarActivity {
                 }
 
                 instagramPhotosAdapter.notifyDataSetChanged();
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+
             }
 
             // OnFailure
