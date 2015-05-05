@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class PhotosActivity extends ActionBarActivity {
 
     private ArrayList<InstagramPhoto> photos;
+    private InstagramPhotosAdapter instagramPhotosAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,9 @@ public class PhotosActivity extends ActionBarActivity {
 
         //Fetch popular photos
         photos = new ArrayList<InstagramPhoto>();
+        instagramPhotosAdapter = new InstagramPhotosAdapter(this, photos);
+        ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+        lvPhotos.setAdapter(instagramPhotosAdapter);
         fetchPopularPhotos();
     }
 
@@ -80,6 +85,8 @@ public class PhotosActivity extends ActionBarActivity {
                 catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                instagramPhotosAdapter.notifyDataSetChanged();
             }
 
             // OnFailure
