@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,6 +47,36 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
         tvCaption.setText(photo.caption);
 
+        // Convert CreatedTime to Relative time and set the same
+        TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
+        tvTime.setText(getRelativeTime(photo.createdTime));
+
         return convertView;
+    }
+
+    private String getRelativeTime(Date time)
+    {
+        Date currentTime = new Date();
+        long timeDiff = (currentTime.getTime() - time.getTime())/1000; // Time difference in seconds
+
+        // Convert seconds to string
+        long minute = 60;
+        long hour = minute * 60;
+        long day = hour * 24;
+        long week = day * 7;
+
+        if (timeDiff < minute){
+            return String.format("%ds", timeDiff);
+        }
+        else if (timeDiff < hour){
+            return String.format("%dm", timeDiff/minute);
+        }
+        if (timeDiff < day){
+            return String.format("%dh", timeDiff/hour);
+        }
+        if (timeDiff < week){
+            return String.format("%dm", timeDiff/day);
+        }
+        return String.format("%dw", timeDiff/week);
     }
 }

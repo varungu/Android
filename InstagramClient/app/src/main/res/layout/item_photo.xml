@@ -50,7 +50,18 @@
         android:layout_marginLeft="10dp"
         android:gravity="center"
         android:height="80dp"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textColor="#41739C" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTime"
+        android:layout_alignTop="@+id/tvUsername"
+        android:layout_alignRight="@+id/tvCaption"
+        android:layout_alignEnd="@+id/tvCaption"
+        android:height="80dp"
+        android:gravity="center_vertical"
+        android:textSize="20sp" />
 
 </RelativeLayout>

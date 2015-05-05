@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class PhotosActivity extends ActionBarActivity {
@@ -24,6 +26,7 @@ public class PhotosActivity extends ActionBarActivity {
     private ArrayList<InstagramPhoto> photos;
     private InstagramPhotosAdapter instagramPhotosAdapter;
     private SwipeRefreshLayout swipeContainer;
+    private boolean loading;
 
 
     @Override
@@ -31,12 +34,31 @@ public class PhotosActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos);
 
+        loading = false;
+
         //Fetch popular photos
         photos = new ArrayList<InstagramPhoto>();
         instagramPhotosAdapter = new InstagramPhotosAdapter(this, photos);
         ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
         lvPhotos.setAdapter(instagramPhotosAdapter);
-        fetchPopularPhotos();
+        fetchPopularPhotos(true);
+
+        // Add infinite scroll
+        lvPhotos.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (!loading) {
+                    if (firstVisibleItem + visibleItemCount + 5 >= totalItemCount) {
+                        // User has less than 5 items left to scroll, load more
+                        fetchPopularPhotos(false);
+                    }
+                }
+            }
+        });
 
         // Add swipe to refresh
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -47,7 +69,7 @@ public class PhotosActivity extends ActionBarActivity {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                fetchPopularPhotos();
+                fetchPopularPhotos(true);
             }
         });
         // Configure the refreshing colors
@@ -58,7 +80,8 @@ public class PhotosActivity extends ActionBarActivity {
 
     }
 
-    public void fetchPopularPhotos() {
+    public void fetchPopularPhotos(final boolean clearList) {
+        loading = true;
         String url = "https://api.instagram.com/v1/media/popular?client_id=8e2d2f9ccbdd4d8f81ce03ef317d6b53";
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, null, new JsonHttpResponseHandler() {
@@ -89,8 +112,11 @@ public class PhotosActivity extends ActionBarActivity {
                     }
                      */
 
-                    // Remove old items before adding new ones
-                    instagramPhotosAdapter.clear();
+                    if (clearList) {
+                        // Remove old items before adding new ones
+                        instagramPhotosAdapter.clear();
+                    }
+
                     JSONArray dataJsonArray = response.getJSONArray("data");
                     for (int i = 0; i < dataJsonArray.length(); i++) {
                         JSONObject photoJson = dataJsonArray.getJSONObject(i);
@@ -99,6 +125,7 @@ public class PhotosActivity extends ActionBarActivity {
                         photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
                         photo.caption = photoJson.getJSONObject("caption").getString("text");
                         photo.imageUrl = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
+                        photo.createdTime = new Date(photoJson.getLong("created_time") * 1000);
                         photo.imageHeight = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
                         photo.imageWidth = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("width");
                         photo.likesCount = photoJson.getJSONObject("likes").getInt("count");
@@ -114,12 +141,15 @@ public class PhotosActivity extends ActionBarActivity {
                 instagramPhotosAdapter.notifyDataSetChanged();
                 // Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
+                loading = false;
 
             }
 
             // OnFailure
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.e("DEBUG", errorResponse.toString());
+                swipeContainer.setRefreshing(false);
+                loading = false;
             }
         });
     }
