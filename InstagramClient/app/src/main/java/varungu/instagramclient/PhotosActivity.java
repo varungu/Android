@@ -90,6 +90,13 @@ public class PhotosActivity extends ActionBarActivity {
                 try {
                     /*
                     {
+                    "videos": {
+                            "standard_resolution": {
+                                "url": "https:\/\/scontent.cdninstagram.com\/hphotos-xaf1\/t50.2886-16\/11214991_1576091376005726_1798705119_n.mp4",
+                                "width": 640,
+                                "height": 640
+                            },
+                        },
                         "created_time": "1430696025",
                         "likes": {
                             "count": 36044,
@@ -121,6 +128,7 @@ public class PhotosActivity extends ActionBarActivity {
                     for (int i = 0; i < dataJsonArray.length(); i++) {
                         JSONObject photoJson = dataJsonArray.getJSONObject(i);
                         InstagramPhoto photo = new InstagramPhoto();
+                        photo.type = photoJson.getString("type");
                         photo.username = photoJson.getJSONObject("user").getString("username");
                         photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
                         photo.caption = photoJson.getJSONObject("caption").getString("text");
@@ -130,6 +138,9 @@ public class PhotosActivity extends ActionBarActivity {
                         photo.imageWidth = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("width");
                         photo.likesCount = photoJson.getJSONObject("likes").getInt("count");
 
+                        if (photo.type.equals("video")) {
+                            photo.videoUrl = photoJson.getJSONObject("videos").getJSONObject("standard_resolution").getString("url");
+                        }
                         // Add to array list
                         photos.add(photo);
                     }

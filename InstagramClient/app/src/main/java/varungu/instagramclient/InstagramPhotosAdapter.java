@@ -1,6 +1,7 @@
 package varungu.instagramclient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,14 @@ import java.util.List;
  * Created by varungupta on 5/4/2015.
  */
 public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
+
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
         super(context, R.layout.item_photo, objects);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        InstagramPhoto photo = getItem(position);
+        final InstagramPhoto photo = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
         }
@@ -43,6 +45,21 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         ivPhoto.setImageResource(0);
         Picasso.with(getContext()).load(photo.imageUrl).placeholder(R.drawable.loader).into(ivPhoto);
 
+        if (photo.type.equals("image")){
+            ivPhoto.setOnClickListener(null);
+        }
+        else {
+            ivPhoto.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+
+                    // Start NewActivity.class
+                    Intent videoIntent = new Intent(getContext(), VideoViewActivity.class);
+                    videoIntent.putExtra("url", photo.videoUrl);
+                    videoIntent.putExtra("caption", photo.caption);
+                    getContext().startActivity(videoIntent);
+                }
+            });
+        }
         // Set caption
         TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
         tvCaption.setText(photo.caption);
