@@ -52,7 +52,6 @@ public class VideoViewActivity extends ActionBarActivity {
             Uri video = Uri.parse(videoUrl);
             vvVideo.setMediaController(mediacontroller);
             vvVideo.setVideoURI(video);
-
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
             e.printStackTrace();
