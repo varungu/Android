@@ -26,30 +26,44 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final InstagramPhoto photo = getItem(position);
+        InstagramPhotoViewHolder viewHolder;
+
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
+            
+            viewHolder = new InstagramPhotoViewHolder();
+            viewHolder.ivProfilePhoto = (ImageView) convertView.findViewById(R.id.ivProfilePhoto);
+            viewHolder.tvUsername = (TextView)convertView.findViewById(R.id.tvUsername);
+            viewHolder.tvTime = (TextView)convertView.findViewById(R.id.tvTime);
+            viewHolder.ivImage = (ImageView)convertView.findViewById(R.id.ivImage);
+            viewHolder.tvCaption = (TextView)convertView.findViewById(R.id.tvCaption);
+
+            convertView.setTag(viewHolder);
+        }
+        else {
+            viewHolder = (InstagramPhotoViewHolder)convertView.getTag();
         }
 
         // Load profile photo
         // ivProfilePhoto.setImageResource(0) will clear the last image in case convertView is reused
-        ImageView ivProfilePhoto = (ImageView) convertView.findViewById(R.id.ivProfilePhoto);
-        ivProfilePhoto.setImageResource(0);
-        Picasso.with(getContext()).load(photo.profilePhotoUrl).into(ivProfilePhoto);
+        viewHolder.ivProfilePhoto.setImageResource(0);
+        Picasso.with(getContext()).load(photo.profilePhotoUrl).into(viewHolder.ivProfilePhoto);
 
         // Set username
-        TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
-        tvUsername.setText(photo.username);
+        viewHolder.tvUsername.setText(photo.username);
+
+        // Convert CreatedTime to Relative time and set the same
+        viewHolder.tvTime.setText(getRelativeTime(photo.createdTime));
 
         // Set image
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivImage);
-        ivPhoto.setImageResource(0);
-        Picasso.with(getContext()).load(photo.imageUrl).placeholder(R.drawable.loader).into(ivPhoto);
+        viewHolder.ivImage.setImageResource(0);
+        Picasso.with(getContext()).load(photo.imageUrl).placeholder(R.drawable.loader).into(viewHolder.ivImage);
 
         if (photo.type.equals("image")){
-            ivPhoto.setOnClickListener(null);
+            viewHolder.ivImage.setOnClickListener(null);
         }
         else {
-            ivPhoto.setOnClickListener(new View.OnClickListener() {
+            viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
 
                     // Start NewActivity.class
@@ -61,12 +75,7 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
             });
         }
         // Set caption
-        TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
-        tvCaption.setText(photo.caption);
-
-        // Convert CreatedTime to Relative time and set the same
-        TextView tvTime = (TextView) convertView.findViewById(R.id.tvTime);
-        tvTime.setText(getRelativeTime(photo.createdTime));
+        viewHolder.tvCaption.setText(photo.caption);
 
         return convertView;
     }
