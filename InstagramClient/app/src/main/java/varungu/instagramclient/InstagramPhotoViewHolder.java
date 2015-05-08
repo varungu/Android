@@ -20,6 +20,9 @@ public class InstagramPhotoViewHolder {
     // Image
     ImageView ivImage;
 
+    // Likes count
+    TextView tvLikesCount;
+
     // Caption
     TextView tvCaption;
 }

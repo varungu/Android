@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -30,12 +31,13 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
-            
+
             viewHolder = new InstagramPhotoViewHolder();
             viewHolder.ivProfilePhoto = (ImageView) convertView.findViewById(R.id.ivProfilePhoto);
             viewHolder.tvUsername = (TextView)convertView.findViewById(R.id.tvUsername);
             viewHolder.tvTime = (TextView)convertView.findViewById(R.id.tvTime);
             viewHolder.ivImage = (ImageView)convertView.findViewById(R.id.ivImage);
+            viewHolder.tvLikesCount = (TextView)convertView.findViewById(R.id.tvLikesCount);
             viewHolder.tvCaption = (TextView)convertView.findViewById(R.id.tvCaption);
 
             convertView.setTag(viewHolder);
@@ -74,6 +76,11 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
                 }
             });
         }
+
+        // Set likes count
+        DecimalFormat likesFormatter = new DecimalFormat("###,###");
+        viewHolder.tvLikesCount.setText(String.format("%s likes", likesFormatter.format(photo.likesCount)));
+
         // Set caption
         viewHolder.tvCaption.setText(photo.caption);
 
