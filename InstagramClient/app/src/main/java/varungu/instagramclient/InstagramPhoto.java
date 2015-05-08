@@ -9,6 +9,7 @@ public class InstagramPhoto {
     public String type;
     public String username;
     public String profilePhotoUrl;
+    public String captionUsername;
     public String caption;
     public String imageUrl;
     public String videoUrl;

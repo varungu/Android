@@ -110,6 +110,12 @@ public class PhotosActivity extends ActionBarActivity {
                         },
                         "caption": {
                             "text": "Love this city!! \ud83d\ude18\ud83d\ude0d\ud83d\ude09 NYC \nBlazer @hatchgal\nShirt @hatchgal\nLeggings @motherhoodmaternity\nShoes @barneysnyofficial\nHat @reissfashion",
+                            "from":{
+                               "username":"dr_m9rg3",
+                               "profile_picture":"https:\/\/igcdn-photos-e-a.akamaihd.net\/hphotos-ak-xpa1\/t51.2885-19\/1739594_964471120265012_1511729204_a.jpg",
+                               "id":"357267124",
+                               "full_name":"\u062f\u0643\u062a\u0648\u0631 \u0645\u0635\u0631\u0642\u0639 \ud83c\udfab"
+                            },
                         },
                         "type": "image",
                         "user": {
@@ -132,6 +138,7 @@ public class PhotosActivity extends ActionBarActivity {
                         photo.username = photoJson.getJSONObject("user").getString("username");
                         photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
                         photo.caption = photoJson.getJSONObject("caption").getString("text");
+                        photo.captionUsername = photoJson.getJSONObject("caption").getJSONObject("from").getString("username");
                         photo.imageUrl = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
                         photo.createdTime = new Date(photoJson.getLong("created_time") * 1000);
                         photo.imageHeight = photoJson.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");

@@ -2,6 +2,7 @@ package varungu.instagramclient;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,8 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         viewHolder.tvLikesCount.setText(String.format("%s likes", likesFormatter.format(photo.likesCount)));
 
         // Set caption
-        viewHolder.tvCaption.setText(photo.caption);
+        String caption = String.format("<font color=#41739C>%s</font> <font color=#000000>%s</font>", photo.captionUsername, photo.caption);
+        viewHolder.tvCaption.setText(Html.fromHtml(caption));
 
         return convertView;
     }
