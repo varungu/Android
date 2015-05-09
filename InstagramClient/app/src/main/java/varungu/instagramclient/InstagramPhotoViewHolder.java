@@ -25,4 +25,9 @@ public class InstagramPhotoViewHolder {
 
     // Caption
     TextView tvCaption;
+
+    // Comments
+    TextView tvCommentsTitle;
+    TextView tvComment1;
+    TextView tvComment2;
 }

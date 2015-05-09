@@ -122,6 +122,33 @@ public class PhotosActivity extends ActionBarActivity {
                             "username": "tameramowrytwo",
                             "profile_picture": "https:\/\/igcdn-photos-c-a.akamaihd.net\/hphotos-ak-xpf1\/t51.2885-19\/11005183_1544003252539498_2082156619_a.jpg",
                         }
+                        "comments": {
+                            "count": 506,
+                            "data": [
+                                {
+                                    "created_time": "1431130641",
+                                    "text": "some comment"
+                                    "from": {
+                                        "username": "xl_qtab",
+                                        "profile_picture": "https://igcdn-photos-g-a.akamaihd.net/hphotos-ak-xpf1/t51.2885-19/11137949_557861774353606_550126288_a.jpg",
+                                        "id": "1646018556",
+                                        "full_name": ""
+                                    },
+                                    "id": "980717358462487707"
+                                },
+                                {
+                                    "created_time": "1431130646",
+                                    "text": "some comment"
+                                    "from": {
+                                        "username": "nasser_bin_mansour",
+                                        "profile_picture": "https://scontent.cdninstagram.com/hphotos-xpf1/t51.2885-19/11008213_1422086488088524_399973610_a.jpg",
+                                        "id": "917397038",
+                                        "full_name": ""
+                                    },
+                                    "id": "980717400665574563"
+                                },
+                            ]
+                        },
                     }
                      */
 
@@ -148,6 +175,15 @@ public class PhotosActivity extends ActionBarActivity {
                         if (photo.type.equals("video")) {
                             photo.videoUrl = photoJson.getJSONObject("videos").getJSONObject("standard_resolution").getString("url");
                         }
+
+                        // TODO: Add checks that atleast 2 comments are there and we are taking the latest comments
+                        photo.commentsCount = photoJson.getJSONObject("comments").getInt("count");
+                        JSONArray comments = photoJson.getJSONObject("comments").getJSONArray("data");
+                        photo.comment1 = comments.getJSONObject(0).getString("text");
+                        photo.comment1User = comments.getJSONObject(0).getJSONObject("from").getString("username");
+                        photo.comment2 = comments.getJSONObject(1).getString("text");
+                        photo.comment2User = comments.getJSONObject(1).getJSONObject("from").getString("username");
+
                         // Add to array list
                         photos.add(photo);
                     }

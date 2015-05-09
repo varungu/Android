@@ -40,6 +40,9 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
             viewHolder.ivImage = (ImageView)convertView.findViewById(R.id.ivImage);
             viewHolder.tvLikesCount = (TextView)convertView.findViewById(R.id.tvLikesCount);
             viewHolder.tvCaption = (TextView)convertView.findViewById(R.id.tvCaption);
+            viewHolder.tvCommentsTitle = (TextView)convertView.findViewById(R.id.tvCommentsTitle);
+            viewHolder.tvComment1 = (TextView)convertView.findViewById(R.id.tvComment1);
+            viewHolder.tvComment2 = (TextView)convertView.findViewById(R.id.tvComment2);
 
             convertView.setTag(viewHolder);
         }
@@ -79,14 +82,26 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         }
 
         // Set likes count
-        DecimalFormat likesFormatter = new DecimalFormat("###,###");
-        viewHolder.tvLikesCount.setText(String.format("%s likes", likesFormatter.format(photo.likesCount)));
+        DecimalFormat numberFormatter = new DecimalFormat("###,###");
+        viewHolder.tvLikesCount.setText(String.format("%s likes", numberFormatter.format(photo.likesCount)));
 
         // Set caption
         String caption = String.format("<font color=#41739C>%s</font> <font color=#000000>%s</font>", photo.captionUsername, photo.caption);
         viewHolder.tvCaption.setText(Html.fromHtml(caption));
 
+
+        // Set comments
+        viewHolder.tvCommentsTitle.setText(String.format("%s comments", numberFormatter.format(photo.commentsCount)));
+        addComment(viewHolder.tvComment1, photo.comment1User, photo.comment1);
+        addComment(viewHolder.tvComment2, photo.comment2User, photo.comment2);
+
         return convertView;
+    }
+
+    private void addComment(TextView textView, String user, String comment)
+    {
+        String commentHtml = String.format("<font color=#41739C>%s</font> <font color=#000000>%s</font>", user, comment);
+        textView.setText(Html.fromHtml(commentHtml));
     }
 
     private String getRelativeTime(Date time)
