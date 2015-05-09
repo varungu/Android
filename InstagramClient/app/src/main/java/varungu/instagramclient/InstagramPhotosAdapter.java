@@ -85,13 +85,24 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         DecimalFormat numberFormatter = new DecimalFormat("###,###");
         viewHolder.tvLikesCount.setText(String.format("%s likes", numberFormatter.format(photo.likesCount)));
 
+
         // Set caption
         String caption = String.format("<font color=#41739C>%s</font> <font color=#000000>%s</font>", photo.captionUsername, photo.caption);
         viewHolder.tvCaption.setText(Html.fromHtml(caption));
 
 
         // Set comments
-        viewHolder.tvCommentsTitle.setText(String.format("%s comments", numberFormatter.format(photo.commentsCount)));
+        viewHolder.tvCommentsTitle.setText(String.format("view all %s comments", numberFormatter.format(photo.commentsCount)));
+        viewHolder.tvCommentsTitle.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+
+                // Start NewActivity.class
+                Intent commentIntent = new Intent(getContext(), CommentsActivity.class);
+                commentIntent.putExtra("id", photo.id);
+                getContext().startActivity(commentIntent);
+            }
+        });
+
         addComment(viewHolder.tvComment1, photo.comment1User, photo.comment1);
         addComment(viewHolder.tvComment2, photo.comment2User, photo.comment2);
 

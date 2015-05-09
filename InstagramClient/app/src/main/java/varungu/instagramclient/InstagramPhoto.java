@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by Varun on 5/3/2015.
  */
 public class InstagramPhoto {
+    public String id;
     public String type;
     public String username;
     public String profilePhotoUrl;

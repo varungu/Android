@@ -161,6 +161,7 @@ public class PhotosActivity extends ActionBarActivity {
                     for (int i = 0; i < dataJsonArray.length(); i++) {
                         JSONObject photoJson = dataJsonArray.getJSONObject(i);
                         InstagramPhoto photo = new InstagramPhoto();
+                        photo.id = photoJson.getString("id");
                         photo.type = photoJson.getString("type");
                         photo.username = photoJson.getJSONObject("user").getString("username");
                         photo.profilePhotoUrl = photoJson.getJSONObject("user").getString("profile_picture");
