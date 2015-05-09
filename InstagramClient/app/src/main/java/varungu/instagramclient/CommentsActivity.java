@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class CommentsActivity extends ActionBarActivity {
 
-    ArrayList<String> comments;
-    ArrayAdapter<String> commentsAdapter;
+    ArrayList<Comment> comments;
+    ArrayAdapter<Comment> commentsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +30,23 @@ public class CommentsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_comments);
 
         comments = new ArrayList<>();
-        commentsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, comments);
+        commentsAdapter = new CommentsAdapter(this, comments);
 
         ListView lvComments = (ListView) findViewById(R.id.lvComments);
         lvComments.setAdapter(commentsAdapter);
 
         Bundle extras = getIntent().getExtras();
         String id = extras.getString("id");
+
+        //Add caption as a top comment
+        Comment comment = new Comment();
+        comment.profileUrl = extras.getString("profile");
+        comment.username = extras.getString("username");
+        comment.text = extras.getString("caption");
+        comments.add(comment);
+        commentsAdapter.notifyDataSetChanged();
+
+        // Fetch other comments
         fetchComments(id);
     }
 
@@ -72,10 +82,10 @@ public class CommentsActivity extends ActionBarActivity {
                     JSONArray dataJsonArray = response.getJSONArray("data");
                     for (int i = 0; i < dataJsonArray.length(); i++) {
                         JSONObject commentJson = dataJsonArray.getJSONObject(i);
-                        String comment = commentJson.getString("text");
-                        String username = commentJson.getJSONObject("from").getString("username");
-
-                        String commentHtml = String.format("<font color=#41739C>%s</font> <font color=#000000>%s</font>", username, comment);
+                        Comment comment = new Comment();
+                        comment.text = commentJson.getString("text");
+                        comment.username = commentJson.getJSONObject("from").getString("username");
+                        comment.profileUrl = commentJson.getJSONObject("from").getString("profile_picture");
                         comments.add(comment);
 
                     }

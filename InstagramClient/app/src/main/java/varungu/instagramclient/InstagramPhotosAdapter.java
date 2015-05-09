@@ -99,6 +99,10 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
                 // Start NewActivity.class
                 Intent commentIntent = new Intent(getContext(), CommentsActivity.class);
                 commentIntent.putExtra("id", photo.id);
+                commentIntent.putExtra("username", photo.username);
+                commentIntent.putExtra("profile", photo.profilePhotoUrl);
+                commentIntent.putExtra("caption", photo.caption);
+
                 getContext().startActivity(commentIntent);
             }
         });
