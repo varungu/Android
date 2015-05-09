@@ -1,10 +1,11 @@
 Android Bootcamp Week 1 - Instagram popular photos application
 
-This is an android demo application for displaying the popular photos from Instagram. See http://courses.codepath.com/courses/intro_to_android/week/1#!assignment for details.
+This is an android demo application for displaying the popular photos from Instagram. See [Codepath Week 1](http://courses.codepath.com/courses/intro_to_android/week/1#!assignment) for details.
 
 Total time spent: 12 hrs
 
 Completed Stories:
+
 1. User can scroll through current popular photos from Instagram
 2. For each photo displayed, user can see the Graphic, Caption, Username, relative timestamp, like count, user profile image
 3. Advanced: Add pull-to-refresh for popular stream with SwipeRefreshLayout
@@ -17,5 +18,6 @@ Completed Stories:
 11. Extra: Infinite Scroll
 
 Walkthrough of all user Stories:
+
 ![demo](https://cloud.githubusercontent.com/assets/2263278/7548825/c7dfab92-f5cf-11e4-8e7c-514379d83432.gif)
 
