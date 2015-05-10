@@ -16,8 +16,9 @@ Completed Stories:
 9. Bonus: Allow user to view all comments for an image within a separate activity or dialog fragment
 10. Bonus: Allow video posts to be played in full-screen using the VideoView
 11. Extra: Infinite Scroll
+12. Extra: Allow opening images in seperate activity and add zoom etc.
 
 Walkthrough of all user Stories:
 
-![demo](https://cloud.githubusercontent.com/assets/2263278/7548825/c7dfab92-f5cf-11e4-8e7c-514379d83432.gif)
+![demo](https://cloud.githubusercontent.com/assets/2263278/7555208/82328f86-f6f8-11e4-8c48-7580235f0e99.gif)
 
