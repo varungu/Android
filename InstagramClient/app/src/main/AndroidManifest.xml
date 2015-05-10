@@ -36,6 +36,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="varungu.instagramclient.PhotosActivity" />
         </activity>
+        <activity
+            android:name=".PhotoActivity"
+            android:label="@string/title_activity_photo"
+            android:parentActivityName=".PhotosActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="varungu.instagramclient.PhotosActivity" />
+        </activity>
     </application>
 
 </manifest>

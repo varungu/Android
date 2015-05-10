@@ -66,7 +66,15 @@ public class InstagramPhotosAdapter  extends ArrayAdapter<InstagramPhoto>{
         Picasso.with(getContext()).load(photo.imageUrl).placeholder(R.drawable.loader).into(viewHolder.ivImage);
 
         if (photo.type.equals("image")){
-            viewHolder.ivImage.setOnClickListener(null);
+            viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View arg0) {
+
+                    // Start NewActivity.class
+                    Intent photoIntent = new Intent(getContext(), PhotoActivity.class);
+                    photoIntent.putExtra("url", photo.imageUrl);
+                    getContext().startActivity(photoIntent);
+                }
+            });
         }
         else {
             viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
