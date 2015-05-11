@@ -2,7 +2,7 @@ Android Bootcamp Week 1 - Instagram popular photos application
 
 This is an android demo application for displaying the popular photos from Instagram. See [Codepath Week 1](http://courses.codepath.com/courses/intro_to_android/week/1#!assignment) for details.
 
-Total time spent: 12 hrs
+Total time spent: 16 hrs
 
 Completed Stories:
 
@@ -17,8 +17,8 @@ Completed Stories:
 10. Bonus: Allow video posts to be played in full-screen using the VideoView
 11. Extra: Infinite Scroll
 12. Extra: Allow opening images in seperate activity and add zoom etc.
+13. Extra: Allow sharing images from Photo Activity.
 
 Walkthrough of all user Stories:
 
-![demo](https://cloud.githubusercontent.com/assets/2263278/7555208/82328f86-f6f8-11e4-8c48-7580235f0e99.gif)
-
+![demo](https://cloud.githubusercontent.com/assets/2263278/7558818/8c9c2eb4-f761-11e4-9d9f-1bd32630a83b.gif)
