@@ -8,8 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.EditText;
-import android.widget.GridView;
 
+import com.etsy.android.grid.StaggeredGridView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class GoogleSearchActivity extends ActionBarActivity {
 
     EditText etSearch;
-    GridView gvResults;
+    StaggeredGridView gvResults;
     ArrayList<ImageResult> imageResults;
     ImageResultsAdapter imageResultsAdapter;
     boolean loading;
@@ -37,12 +37,12 @@ public class GoogleSearchActivity extends ActionBarActivity {
         searchQuery = "";
 
         etSearch = (EditText) findViewById(R.id.etSearch);
-        gvResults = (GridView) findViewById(R.id.gvResults);
+        gvResults = (StaggeredGridView) findViewById(R.id.gvResults);
 
         imageResults = new ArrayList<>();
         imageResultsAdapter = new ImageResultsAdapter(this, imageResults);
         gvResults.setAdapter(imageResultsAdapter);
-        
+
         gvResults.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
