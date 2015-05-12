@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.GridView;
 
@@ -24,19 +24,43 @@ public class GoogleSearchActivity extends ActionBarActivity {
     EditText etSearch;
     GridView gvResults;
     ArrayList<ImageResult> imageResults;
-    ArrayAdapter<ImageResult> imageResultAdapter;
+    ImageResultsAdapter imageResultsAdapter;
+    boolean loading;
+    String searchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_search);
 
+        loading = false;
+        searchQuery = "";
+
         etSearch = (EditText) findViewById(R.id.etSearch);
         gvResults = (GridView) findViewById(R.id.gvResults);
 
         imageResults = new ArrayList<>();
-        imageResultAdapter = new ArrayAdapter<ImageResult>(this, android.R.layout.simple_expandable_list_item_1, imageResults);
-        gvResults.setAdapter(imageResultAdapter);
+        imageResultsAdapter = new ImageResultsAdapter(this, imageResults);
+        gvResults.setAdapter(imageResultsAdapter);
+        
+        gvResults.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (!loading && imageResultsAdapter.getCount() < 64) {
+                    if (firstVisibleItem + visibleItemCount + 4 >= totalItemCount) {
+                        // User has less than 4 items left to scroll, load more
+                        GetResults();
+                    }
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -62,82 +86,32 @@ public class GoogleSearchActivity extends ActionBarActivity {
     }
 
     public void executeSearch(View view){
-        String searchQuery = etSearch.getText().toString();
-        imageResultAdapter.clear();
-        GetResults(searchQuery);
+        searchQuery = etSearch.getText().toString();
+        imageResultsAdapter.clear();
+        GetResults();
     }
 
-    public void GetResults(final String searchQuery) {
+    public void GetResults() {
 
-        // Search google images with this query
-        String url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + searchQuery + "&start=" + imageResults.size();
-        AsyncHttpClient httpClient = new AsyncHttpClient();
-        httpClient.get(url, null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        if (searchQuery != null && searchQuery.trim() != "") {
+            loading = true;
+            // Search google images with this query
+            String url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + searchQuery + "&start=" + imageResultsAdapter.getCount();
+            AsyncHttpClient httpClient = new AsyncHttpClient();
+            httpClient.get(url, null, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                /*
-                {
-                    responseData: {
-                        results: [
-                            {
-                                GsearchResultClass: "GimageSearch",
-                                width: "2956",
-                                height: "2000",
-                                imageId: "ANd9GcQGUmNpgU3iH6wod2p5ooaJkQlvAVLMmc4f1olZPp9A8nWX8HM9vTdPdwg",
-                                tbWidth: "150",
-                                tbHeight: "101",
-                                unescapedUrl: "http://www.grandfather.com/wp-content/uploads/2012/08/fall-road.jpg",
-                                url: "http://www.grandfather.com/wp-content/uploads/2012/08/fall-road.jpg",
-                                visibleUrl: "www.grandfather.com",
-                                title: "Hi Res Photos-",
-                                titleNoFormatting: "Hi Res Photos-",
-                                originalContextUrl: "http://www.grandfather.com/about-grandfather-mountain/media/hi-res-photos-fall/",
-                                content: "<b>fall</b>-road.jpg",
-                                contentNoFormatting: "fall-road.jpg",
-                                tbUrl: "http://t2.gstatic.com/images?q=tbn:ANd9GcQGUmNpgU3iH6wod2p5ooaJkQlvAVLMmc4f1olZPp9A8nWX8HM9vTdPdwg"
-                            },
-                            .
-                            .
-                            .
-                        ],
-                        cursor: {
-                            resultCount: "326,000,000",
-                            pages: [
-                                {
-                                    start: "0",
-                                    label: 1
-                                },
-                                {
-                                    start: "4",
-                                    label: 2
-                                },
-                                .
-                                .
-                                .
-                            ],
-                            estimatedResultCount: "326000000",
-                            currentPageIndex: 0,
-                            moreResultsUrl: "http://www.google.com/images?oe=utf8&ie=utf8&source=uds&start=0&hl=en&q=fall",
-                            searchResultTime: "0.37"
-                        }
-                    },
-                    responseDetails: null,
-                    responseStatus: 200
+                    imageResultsAdapter.addAll(ImageResult.ImageResults(response));
+                    loading = false;
                 }
-                */
 
-                imageResultAdapter.addAll(ImageResult.ImageResults(response));
-
-                if (imageResults.size() < 16) {
-                    GetResults(searchQuery);
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.e("DEBUG", errorResponse.toString());
+                    loading = false;
                 }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.e("DEBUG", errorResponse.toString());
-            }
-        });
+            });
+        }
     }
 }
