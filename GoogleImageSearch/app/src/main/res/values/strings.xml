@@ -13,6 +13,7 @@
     <string name="ButtonSave">Save</string>
     <string name="ButtonCancel">Cancel</string>
     <string name="SiteFilter">Site Filter</string>
+    <string name="NoResultsMessage">To begin, search using top bar</string>
 
     <string-array name="ArrayImageSize">
         <item>any</item>

@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.etsy.android.grid.StaggeredGridView;
 import com.loopj.android.http.AsyncHttpClient;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 public class GoogleSearchActivity extends ActionBarActivity implements SettingsDialogListener {
 
     StaggeredGridView gvResults;
+    TextView tvEmpty;
     ArrayList<ImageResult> imageResults;
     ImageResultsAdapter imageResultsAdapter;
     boolean loading;
@@ -47,6 +49,7 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
         searchQuery = "";
 
         gvResults = (StaggeredGridView) findViewById(R.id.gvResults);
+        tvEmpty = (TextView) findViewById(R.id.tvEmpty);
 
         imageResults = new ArrayList<>();
         imageResultsAdapter = new ImageResultsAdapter(this, imageResults);
@@ -159,7 +162,7 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
             httpClient.get(builder.build().toString(), null, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
+                    tvEmpty.setVisibility(View.GONE);
                     imageResultsAdapter.addAll(ImageResult.ImageResults(response));
                     miActionProgressItem.setVisible(false);
                     loading = false;
