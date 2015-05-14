@@ -5,7 +5,7 @@
     <item
         android:id="@+id/miShare"
         android:orderInCategory="5"
-        app:showAsAction="always"
+        app:showAsAction="never"
         android:title="Share"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
     <item
@@ -15,4 +15,12 @@
         android:orderInCategory="100"
         app:showAsAction="always"
         app:actionLayout="@layout/action_view_progress" />
+    <item
+        android:id="@+id/miVisitPage"
+        android:title="Visit Page"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/miViewInBrowser"
+        android:title="View in Browser"
+        app:showAsAction="never"/>
 </menu>

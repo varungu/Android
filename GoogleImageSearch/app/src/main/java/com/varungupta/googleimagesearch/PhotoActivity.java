@@ -26,6 +26,7 @@ public class PhotoActivity extends ActionBarActivity {
 
     ShareActionProvider miShareAction;
     MenuItem miActionProgressItem;
+    ImageResult image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +35,19 @@ public class PhotoActivity extends ActionBarActivity {
         final ImageView ivImage = (ImageView) findViewById(R.id.ivImage);
 
         Bundle extras = getIntent().getExtras();
-        String url = extras.getString("url");
-        String thumbnail = extras.getString("thumbnail");
+        image = (ImageResult)extras.getSerializable("image");
+
+        setTitle(image.visibleUrl);
         Drawable yourDrawable = getResources().getDrawable(R.drawable.loader);
         try {
-            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(thumbnail));
-            yourDrawable = Drawable.createFromStream(inputStream, thumbnail );
+            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(image.thumbnailUrl));
+            yourDrawable = Drawable.createFromStream(inputStream, image.thumbnailUrl );
         } catch (FileNotFoundException e) {
 
         }
 
         ivImage.setImageResource(0);
-        Picasso.with(this).load(url).placeholder(yourDrawable).into(ivImage, new Callback() {
+        Picasso.with(this).load(image.url).placeholder(yourDrawable).into(ivImage, new Callback() {
             @Override
             public void onSuccess() {
                 miActionProgressItem.setVisible(false);
@@ -80,7 +82,15 @@ public class PhotoActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.miVisitPage) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(image.originalContextUrl));
+            startActivity(browserIntent);
+            return true;
+        }
+
+        if (id == R.id.miViewInBrowser) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(image.url));
+            startActivity(browserIntent);
             return true;
         }
 

@@ -4,19 +4,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by varungupta on 5/12/15.
  */
-public class ImageResult {
+public class ImageResult implements Serializable {
     String url;
     String thumbnailUrl;
+    String visibleUrl;
+    String originalContextUrl;
 
     public ImageResult(JSONObject json) {
         try {
             this.url = json.getString("url");
             this.thumbnailUrl = json.getString("tbUrl");
+            this.visibleUrl = json.getString("visibleUrl");
+            this.originalContextUrl = json.getString("originalContextUrl");
         } catch (JSONException e) {
             e.printStackTrace();
         }
