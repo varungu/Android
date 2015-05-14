@@ -13,10 +13,6 @@ public class ImageResult {
     String url;
     String thumbnailUrl;
 
-    public ImageResult(String url) {
-        this.url = url;
-    }
-
     public ImageResult(JSONObject json) {
         try {
             this.url = json.getString("url");

@@ -1,6 +1,8 @@
 package com.varungupta.googleimagesearch;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-public class GoogleSearchActivity extends ActionBarActivity {
+public class GoogleSearchActivity extends ActionBarActivity implements SettingsDialogListener {
 
     EditText etSearch;
     StaggeredGridView gvResults;
@@ -79,10 +81,17 @@ public class GoogleSearchActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showSettingsDialog();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettingsDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        SettingsDialog editNameDialog = SettingsDialog.getInstance(this);
+        editNameDialog.show(fm, "Settings");
     }
 
     public void executeSearch(View view){
@@ -96,9 +105,20 @@ public class GoogleSearchActivity extends ActionBarActivity {
         if (searchQuery != null && searchQuery.trim() != "") {
             loading = true;
             // Search google images with this query
-            String url = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + searchQuery + "&start=" + imageResultsAdapter.getCount();
+            Uri.Builder builder = new Uri.Builder();
+            builder.scheme("https")
+                    .authority("ajax.googleapis.com")
+                    .appendPath("ajax")
+                    .appendPath("services")
+                    .appendPath("search")
+                    .appendPath("images")
+                    .appendQueryParameter("v", "1.0")
+                    .appendQueryParameter("q", searchQuery)
+                    .appendQueryParameter("start", "" + imageResultsAdapter.getCount());
+            SearchSettings.getInstance().appendParams(builder);
+
             AsyncHttpClient httpClient = new AsyncHttpClient();
-            httpClient.get(url, null, new JsonHttpResponseHandler() {
+            httpClient.get(builder.build().toString(), null, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -113,5 +133,11 @@ public class GoogleSearchActivity extends ActionBarActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onSaveSettingsClicked() {
+        imageResultsAdapter.clear();
+        GetResults();
     }
 }

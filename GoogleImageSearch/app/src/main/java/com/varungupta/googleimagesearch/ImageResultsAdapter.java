@@ -1,6 +1,7 @@
 package com.varungupta.googleimagesearch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ public class ImageResultsAdapter extends ArrayAdapter<ImageResult> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageResult imageResult = getItem(position);
+        final ImageResult imageResult = getItem(position);
         ImageResultViewHolder viewHolder;
 
         if (convertView == null) {
@@ -38,6 +39,16 @@ public class ImageResultsAdapter extends ArrayAdapter<ImageResult> {
 
         viewHolder.ivImage.setImageResource(0);
         Picasso.with(getContext()).load(imageResult.thumbnailUrl).placeholder(R.drawable.loader).into(viewHolder.ivImage);
+
+        viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+
+                // Start NewActivity.class
+                Intent ImageIntent = new Intent(getContext(), PhotoActivity.class);
+                ImageIntent.putExtra("url", imageResult.url);
+                getContext().startActivity(ImageIntent);
+            }
+        });
 
         return convertView;
     }
