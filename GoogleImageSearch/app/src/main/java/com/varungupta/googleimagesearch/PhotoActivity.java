@@ -37,11 +37,12 @@ public class PhotoActivity extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
         image = (ImageResult)extras.getSerializable("image");
 
+        String thumbnail = extras.getString("thumbnail");
         setTitle(image.visibleUrl);
         Drawable yourDrawable = getResources().getDrawable(R.drawable.loader);
         try {
-            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(image.thumbnailUrl));
-            yourDrawable = Drawable.createFromStream(inputStream, image.thumbnailUrl );
+            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(thumbnail));
+            yourDrawable = Drawable.createFromStream(inputStream, thumbnail );
         } catch (FileNotFoundException e) {
 
         }

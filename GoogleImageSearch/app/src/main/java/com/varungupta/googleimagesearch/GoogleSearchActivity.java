@@ -80,6 +80,7 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
                 ImageView ivImage = (ImageView) view.findViewById(R.id.ivImage);
                 Intent ImageIntent = new Intent(GoogleSearchActivity.this, PhotoActivity.class);
                 ImageIntent.putExtra("image", imageResult);
+                ImageIntent.putExtra("thumbnail", getLocalBitmapUri(ivImage));
                 GoogleSearchActivity.this.startActivity(ImageIntent);
             }
         });
