@@ -1,7 +1,12 @@
 package com.varungupta.googleimagesearch;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -9,7 +14,10 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 
 import com.etsy.android.grid.StaggeredGridView;
 import com.loopj.android.http.AsyncHttpClient;
@@ -57,6 +65,19 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
                         GetResults();
                     }
                 }
+            }
+        });
+
+        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Start NewActivity.class
+                ImageResult imageResult = imageResultsAdapter.getItem(position);
+                ImageView ivImage = (ImageView) view.findViewById(R.id.ivImage);
+                Intent ImageIntent = new Intent(GoogleSearchActivity.this, PhotoActivity.class);
+                ImageIntent.putExtra("url", imageResult.url);
+                ImageIntent.putExtra("thumbnail", getLocalBitmapUri(ivImage));
+                GoogleSearchActivity.this.startActivity(ImageIntent);
             }
         });
 
@@ -152,4 +173,16 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
         imageResultsAdapter.clear();
         GetResults();
     }
+
+    // Returns the URI path to the Bitmap displayed in specified ImageView
+    public String getLocalBitmapUri(ImageView ivImage) {
+        Drawable mDrawable = ivImage.getDrawable();
+        Bitmap mBitmap = ((BitmapDrawable)mDrawable).getBitmap();
+
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(),
+                mBitmap, "Image Description", null);
+
+        return path;
+    }
+
 }

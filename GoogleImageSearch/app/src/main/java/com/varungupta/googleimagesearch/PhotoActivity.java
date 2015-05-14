@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 
 public class PhotoActivity extends ActionBarActivity {
 
@@ -31,8 +34,17 @@ public class PhotoActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         String url = extras.getString("url");
+        String thumbnail = extras.getString("thumbnail");
+        Drawable yourDrawable = getResources().getDrawable(R.drawable.loader);
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(thumbnail));
+            yourDrawable = Drawable.createFromStream(inputStream, thumbnail );
+        } catch (FileNotFoundException e) {
+
+        }
+
         ivImage.setImageResource(0);
-        Picasso.with(this).load(url).placeholder(R.drawable.loader).into(ivImage, new Callback() {
+        Picasso.with(this).load(url).placeholder(yourDrawable).into(ivImage, new Callback() {
             @Override
             public void onSuccess() {
                 setupShareIntent(ivImage, miShareAction);
