@@ -36,6 +36,7 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
     ImageResultsAdapter imageResultsAdapter;
     boolean loading;
     String searchQuery;
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,8 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_google_search, menu);
 
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -137,6 +140,8 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
 
         if (searchQuery != null && searchQuery.trim() != "") {
             loading = true;
+            miActionProgressItem.setVisible(true);
+
             // Search google images with this query
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("https")
@@ -156,12 +161,14 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     imageResultsAdapter.addAll(ImageResult.ImageResults(response));
+                    miActionProgressItem.setVisible(false);
                     loading = false;
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     Log.e("DEBUG", errorResponse.toString());
+                    miActionProgressItem.setVisible(false);
                     loading = false;
                 }
             });

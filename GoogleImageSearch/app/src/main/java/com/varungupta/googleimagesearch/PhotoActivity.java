@@ -25,6 +25,7 @@ import java.io.InputStream;
 public class PhotoActivity extends ActionBarActivity {
 
     ShareActionProvider miShareAction;
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +48,13 @@ public class PhotoActivity extends ActionBarActivity {
         Picasso.with(this).load(url).placeholder(yourDrawable).into(ivImage, new Callback() {
             @Override
             public void onSuccess() {
+                miActionProgressItem.setVisible(false);
                 setupShareIntent(ivImage, miShareAction);
             }
 
             @Override
             public void onError() {
-
+                miActionProgressItem.setVisible(false);
             }
         });
     }
@@ -63,6 +65,9 @@ public class PhotoActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_photo, menu);
         MenuItem item = menu.findItem(R.id.miShare);
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        miActionProgressItem.setVisible(true);
 
         return true;
     }
