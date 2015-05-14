@@ -3,13 +3,13 @@ package com.varungupta.googleimagesearch;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
-import android.widget.EditText;
 
 import com.etsy.android.grid.StaggeredGridView;
 import com.loopj.android.http.AsyncHttpClient;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 public class GoogleSearchActivity extends ActionBarActivity implements SettingsDialogListener {
 
-    EditText etSearch;
     StaggeredGridView gvResults;
     ArrayList<ImageResult> imageResults;
     ImageResultsAdapter imageResultsAdapter;
@@ -38,7 +37,6 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
         loading = false;
         searchQuery = "";
 
-        etSearch = (EditText) findViewById(R.id.etSearch);
         gvResults = (StaggeredGridView) findViewById(R.id.gvResults);
 
         imageResults = new ArrayList<>();
@@ -69,6 +67,26 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_google_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+                searchQuery = query;
+                imageResultsAdapter.clear();
+                GetResults();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -92,12 +110,6 @@ public class GoogleSearchActivity extends ActionBarActivity implements SettingsD
         FragmentManager fm = getSupportFragmentManager();
         SettingsDialog editNameDialog = SettingsDialog.getInstance(this);
         editNameDialog.show(fm, "Settings");
-    }
-
-    public void executeSearch(View view){
-        searchQuery = etSearch.getText().toString();
-        imageResultsAdapter.clear();
-        GetResults();
     }
 
     public void GetResults() {

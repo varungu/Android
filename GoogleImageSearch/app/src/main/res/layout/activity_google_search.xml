@@ -4,39 +4,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GoogleSearchActivity">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/SearchButtonText"
-        android:id="@+id/btnSearch"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="executeSearch"
-        android:layout_marginRight="16dp"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etSearch"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/btnSearch"
-        android:layout_toStartOf="@+id/btnSearch"
-        android:layout_alignBottom="@+id/btnSearch"
-        android:hint="@string/SearchBoxHint"
-        android:textSize="20sp"
-        android:gravity="left|center_vertical"
-        android:layout_marginLeft="16dp"/>
-
     <com.etsy.android.grid.StaggeredGridView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/gvResults"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:item_margin="8dp"
-        android:layout_below="@+id/btnSearch" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        app:item_margin="8dp" />
 
 </RelativeLayout>
