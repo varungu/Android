@@ -1,4 +1,4 @@
-Android Bootcamp Week 1 - Instagram popular photos application
+**Android Bootcamp Week 1 - Instagram popular photos application**
 
 This is an android demo application for displaying the popular photos from Instagram. See [Codepath Week 1](http://courses.codepath.com/courses/intro_to_android/week/1#!assignment) for details.
 
