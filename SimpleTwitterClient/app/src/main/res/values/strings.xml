@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Twitter</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="btnLogin">Log in</string>
+    <string name="ivLoginBackground">background</string>
+    <string name="tvLoginHello">Hello.</string>
+    <string name="tvLoginWelcome">Welcome to Twitter.</string>
+</resources>
