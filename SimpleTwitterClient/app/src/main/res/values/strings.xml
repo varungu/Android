@@ -7,4 +7,5 @@
     <string name="ivLoginBackground">background</string>
     <string name="tvLoginHello">Hello.</string>
     <string name="tvLoginWelcome">Welcome to Twitter.</string>
+    <string name="title_activity_timeline">Home</string>
 </resources>

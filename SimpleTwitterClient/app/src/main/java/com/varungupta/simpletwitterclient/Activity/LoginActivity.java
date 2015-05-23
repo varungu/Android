@@ -1,5 +1,6 @@
-package com.varungupta.simpletwitterclient;
+package com.varungupta.simpletwitterclient.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,6 +9,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
+import com.varungupta.simpletwitterclient.R;
 import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
@@ -47,7 +49,10 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
     @Override
     public void onLoginSuccess() {
-        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+        Intent timelineIntent = new Intent(this, TimelineActivity.class);
+        startActivity(timelineIntent);
+
+        overridePendingTransition(R.layout.enter_from_right, R.layout.exit_to_left);
     }
 
     @Override
