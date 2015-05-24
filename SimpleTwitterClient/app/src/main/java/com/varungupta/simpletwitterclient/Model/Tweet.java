@@ -137,7 +137,7 @@ public class Tweet extends Model {
             this.user_name = user.getString("name");
             this.user_profile_image_url = user.getString("profile_image_url");
             this.user_id_str = user.getString("id_str");
-            this.user_screen_name = user.getString("screen_name");
+            this.user_screen_name = "@" + user.getString("screen_name");
 
         } catch (JSONException e) {
             e.printStackTrace();
