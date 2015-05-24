@@ -8,11 +8,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 @Table(name = "Tweets")
-public class Tweet extends Model {
+public class Tweet extends Model implements Serializable {
     // Define database columns and associated fields
     @Column(name = "id_str")
     public String id_str;

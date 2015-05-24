@@ -27,7 +27,7 @@
                 android:padding="15dp"
                 android:contentDescription="@string/iv_timeline_actionbar_logo_description" />
             <TextView
-                android:id="@+id/tv_timeline_actionbar_title"
+                android:id="@+id/tv_compose_actionbar_char_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tv_timeline_actionbar_title"

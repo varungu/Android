@@ -63,7 +63,7 @@ public class TimelineActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_compose) {
             Intent intent = new Intent(this, ComposeActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 20);
 
             overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
             return true;
@@ -84,5 +84,16 @@ public class TimelineActivity extends ActionBarActivity {
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 20) {
+            if(resultCode == RESULT_OK){
+                Tweet tweet = (Tweet)data.getSerializableExtra("tweet");
+                tweets.add(0, tweet);
+                tweetsAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

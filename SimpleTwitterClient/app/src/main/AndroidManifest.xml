@@ -48,7 +48,8 @@
         </activity>
         <activity
             android:name=".Activity.ComposeActivity"
-            android:label="@string/title_activity_compose" >
+            android:label="@string/title_activity_compose"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activity.TimelineActivity" />
