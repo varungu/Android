@@ -1,11 +1,13 @@
 package com.varungupta.simpletwitterclient.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.varungupta.simpletwitterclient.Adapter.TweetsAdapter;
@@ -59,7 +61,11 @@ public class TimelineActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_compose) {
+            Intent intent = new Intent(this, ComposeActivity.class);
+            startActivity(intent);
+
+            overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
             return true;
         }
 
@@ -75,7 +81,7 @@ public class TimelineActivity extends ActionBarActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
+                Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
             }
         });
     }

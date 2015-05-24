@@ -11,4 +11,6 @@
     <string name="tv_timeline_actionbar_title">Home</string>
     <string name="iv_timeline_actionbar_logo_description">Logo</string>
     <string name="action_compose">Compose</string>
+    <string name="title_activity_compose">ComposeActivity</string>
+    <string name="tv_compose_tweet_hint">What\'s happening?</string>
 </resources>

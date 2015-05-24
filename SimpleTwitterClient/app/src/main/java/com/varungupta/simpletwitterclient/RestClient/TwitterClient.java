@@ -4,8 +4,12 @@ import android.content.Context;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.varungupta.simpletwitterclient.Model.User;
 
+import org.apache.http.Header;
+import org.json.JSONObject;
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
@@ -19,6 +23,8 @@ public class TwitterClient extends OAuthBaseClient {
     public static final String REST_CONSUMER_SECRET = "iNwyTEBzzMDiTuIrqShAfe0P2DdVM0bMOd61icVmifO8mvitFL";
     public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets";
 
+    private User authenticatedUser;
+
     public TwitterClient(Context context) {
         super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
     }
@@ -30,5 +36,31 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", 25);
         params.put("since_id", 1);
         client.get(apiUrl, params, handler);
+    }
+
+    public void addTweet(String status, AsyncHttpResponseHandler handler) {
+        //POST
+        // https://api.twitter.com/1.1/statuses/update.json?status=Maybe%20he%27l
+        String apiUrl = getApiUrl("statuses/update.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("status", status);
+        client.put(apiUrl, params, handler);
+    }
+
+    public void verifyCredentials() {
+        //GET
+        //https://api.twitter.com/1.1/account/verify_credentials.json
+        String apiUrl = getApiUrl("account/verify_credentials.json");
+        client.get(apiUrl, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                authenticatedUser = new User(response);
+            }
+        });
+    }
+
+    public User getAuthenticatedUser() {
+        return authenticatedUser;
     }
 }

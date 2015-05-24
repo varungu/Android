@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 import com.varungupta.simpletwitterclient.R;
 import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
+import com.varungupta.simpletwitterclient.TwitterApplication;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
@@ -49,6 +50,9 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
     @Override
     public void onLoginSuccess() {
+        // Get and store user details
+        TwitterApplication.getTwitterClient().verifyCredentials();
+
         Intent timelineIntent = new Intent(this, TimelineActivity.class);
         startActivity(timelineIntent);
 

@@ -7,6 +7,7 @@ import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
 public class TwitterApplication extends com.activeandroid.app.Application {
     private static Context context;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
