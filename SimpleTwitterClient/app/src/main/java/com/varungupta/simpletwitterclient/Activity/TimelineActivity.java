@@ -1,18 +1,43 @@
 package com.varungupta.simpletwitterclient.Activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.varungupta.simpletwitterclient.Adapter.TweetsAdapter;
+import com.varungupta.simpletwitterclient.Model.Tweet;
 import com.varungupta.simpletwitterclient.R;
+import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
+import com.varungupta.simpletwitterclient.TwitterApplication;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 
 public class TimelineActivity extends ActionBarActivity {
+
+    TwitterClient twitterClient;
+    ArrayList<Tweet> tweets;
+    TweetsAdapter tweetsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+
+        twitterClient = TwitterApplication.getTwitterClient();
+
+        tweets = new ArrayList<Tweet>();
+        tweetsAdapter = new TweetsAdapter(this, tweets);
+
+        ListView lvTimeline = (ListView) findViewById(R.id.lvTimeline);
+        lvTimeline.setAdapter(tweetsAdapter);
+
+        getTweets();
     }
 
     @Override
@@ -35,5 +60,19 @@ public class TimelineActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getTweets() {
+        twitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                tweetsAdapter.addAll(Tweet.fromJson(response));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 }
