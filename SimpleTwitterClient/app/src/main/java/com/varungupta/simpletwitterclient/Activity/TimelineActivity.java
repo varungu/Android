@@ -2,6 +2,7 @@ package com.varungupta.simpletwitterclient.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,6 +31,7 @@ public class TimelineActivity extends ActionBarActivity {
     ArrayList<Tweet> tweets;
     TweetsAdapter tweetsAdapter;
     boolean loading;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,15 @@ public class TimelineActivity extends ActionBarActivity {
             }
         });
 
+        // Add swipe to refresh
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getTweets(0);
+            }
+        });
     }
 
     @Override
@@ -97,13 +108,19 @@ public class TimelineActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getTweets(long max_id) {
+    private void getTweets(final long max_id) {
         loading = true;
         twitterClient.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+
+                if (max_id == 0) {
+                    tweetsAdapter.clear();
+                }
+                
                 tweetsAdapter.addAll(Tweet.fromJson(response));
                 loading = false;
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -111,6 +128,7 @@ public class TimelineActivity extends ActionBarActivity {
                 Log.e("Tweets", responseString);
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
                 loading = false;
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -118,6 +136,7 @@ public class TimelineActivity extends ActionBarActivity {
                 Log.e("Tweets", errorResponse.toString());
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
                 loading = false;
+                swipeContainer.setRefreshing(false);
             }
         });
     }
