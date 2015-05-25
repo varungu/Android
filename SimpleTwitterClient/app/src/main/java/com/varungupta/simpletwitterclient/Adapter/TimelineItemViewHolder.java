@@ -14,4 +14,5 @@ public class TimelineItemViewHolder {
     TextView tv_timeline_item_text;
     ImageView iv_timeline_item_retweeted_icon;
     TextView tv_timeline_item_retweeted;
+    ImageView iv_timeline_item_embedded_photo;
 }

@@ -36,6 +36,7 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", 200);
         params.put("since_id", 1);
         params.put("contributor_details", true);
+
         if (max_id != 0) {
             params.put("max_id", max_id);
         }

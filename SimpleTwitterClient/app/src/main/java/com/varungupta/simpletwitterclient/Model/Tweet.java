@@ -37,6 +37,8 @@ public class Tweet extends Model implements Serializable {
     public String user_id_str;
     @Column(name = "user_screen_name")
     public String user_screen_name;
+    @Column(name  = "embedded_photo_url")
+    public String embedded_photo_url;
 
 
     // Make sure to always define this constructor with no arguments
@@ -157,6 +159,18 @@ public class Tweet extends Model implements Serializable {
                 tweet.user_profile_image_url = user.getString("profile_image_url");
                 tweet.user_id_str = user.getString("id_str");
                 tweet.user_screen_name = "@" + user.getString("screen_name");
+
+                JSONObject entities = object.getJSONObject("entities");
+                if (entities.has("media")) {
+                    JSONArray mediaArray = entities.getJSONArray("media");
+                    if (mediaArray.length() > 0) {
+                        JSONObject media = mediaArray.getJSONObject(0);
+                        if (media.getString("type").equals("photo")) {
+                            tweet.embedded_photo_url = mediaArray.getJSONObject(0).getString("media_url");
+                        }
+                    }
+                }
+
                 return tweet;
             }
 

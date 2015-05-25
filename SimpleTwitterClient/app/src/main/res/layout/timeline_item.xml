@@ -99,5 +99,11 @@
             android:autoLink="all"
             android:linksClickable="true"
             />
+        <ImageView
+            android:id="@+id/iv_timeline_item_embedded_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_timeline_item_text"
+            android:layout_marginTop="10dp"/>
     </RelativeLayout>
 </RelativeLayout>
