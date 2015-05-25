@@ -5,6 +5,7 @@ import android.util.Log;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,14 +14,16 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "Tweets")
 public class Tweet extends Model implements Serializable {
     // Define database columns and associated fields
-    @Column(name = "id_str")
+    @Column(name = "id_str", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public String id_str;
+    @Column(name = "id_long", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public long id;
-    public boolean retweeted;
+    @Column(name = "retweet_user")
     public String retweet_user;
     @Column(name = "created_at")
     public long created_at;
@@ -176,10 +179,20 @@ public class Tweet extends Model implements Serializable {
             }
 
             Tweet tweet = CreateTweet(tweetJson);
-            //tweet.save();
+            tweet.save();
             tweets.add(tweet);
         }
 
         return tweets;
     }
+
+    // ...
+    public static List<Tweet> getAll() {
+        // This is how you execute a query
+        return new Select()
+                .all()
+                .from(Tweet.class)
+                .execute();
+    }
+
 }

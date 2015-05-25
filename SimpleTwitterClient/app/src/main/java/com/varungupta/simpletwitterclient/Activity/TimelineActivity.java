@@ -44,6 +44,7 @@ public class TimelineActivity extends ActionBarActivity {
         twitterClient = TwitterApplication.getTwitterClient();
 
         tweets = new ArrayList<Tweet>();
+        tweets.addAll(Tweet.getAll());
         tweetsAdapter = new TweetsAdapter(this, tweets);
 
         ListView lvTimeline = (ListView) findViewById(R.id.lvTimeline);
@@ -126,7 +127,6 @@ public class TimelineActivity extends ActionBarActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.e("Tweets", responseString);
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
                 loading = false;
                 swipeContainer.setRefreshing(false);
@@ -134,7 +134,6 @@ public class TimelineActivity extends ActionBarActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.e("Tweets", errorResponse.toString());
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
                 loading = false;
                 swipeContainer.setRefreshing(false);
