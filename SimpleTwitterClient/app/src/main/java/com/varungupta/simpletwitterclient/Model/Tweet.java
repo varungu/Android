@@ -1,5 +1,7 @@
 package com.varungupta.simpletwitterclient.Model;
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -132,7 +134,7 @@ public class Tweet extends Model implements Serializable {
 
              */
             // Find re-tweet information
-
+            Log.i("tweet", object.toString());
             if (object.has("retweeted_status")) {
                 JSONObject retweeted_status = object.getJSONObject("retweeted_status");
                 Tweet newTweet = CreateTweet(retweeted_status);
