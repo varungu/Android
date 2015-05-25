@@ -37,6 +37,8 @@ public class Tweet extends Model implements Serializable {
     public String user_profile_image_url;
     @Column(name = "user_id_str")
     public String user_id_str;
+    @Column(name = "user_id")
+    public long user_id;
     @Column(name = "user_screen_name")
     public String user_screen_name;
     @Column(name  = "embedded_photo_url")
@@ -156,7 +158,7 @@ public class Tweet extends Model implements Serializable {
                 JSONObject retweeted_status = object.getJSONObject("retweeted_status");
                 Tweet newTweet = CreateTweet(retweeted_status);
                 newTweet.retweet_user = object.getJSONObject("user").getString("name");
-                newTweet.retweet_user_screen_name = object.getJSONObject("user").getString("screen_name");
+                newTweet.retweet_user_screen_name = "@" + object.getJSONObject("user").getString("screen_name");
                 return newTweet;
             }
             else {
@@ -176,9 +178,11 @@ public class Tweet extends Model implements Serializable {
                 tweet.user_name = user.getString("name");
                 tweet.user_profile_image_url = user.getString("profile_image_url");
                 tweet.user_id_str = user.getString("id_str");
+                tweet.user_id = user.getLong("id");
                 tweet.user_screen_name = "@" + user.getString("screen_name");
                 tweet.user_following = user.getBoolean("following");
 
+                tweet.embedded_photo_url = null;
                 JSONObject entities = object.getJSONObject("entities");
                 if (entities.has("media")) {
                     JSONArray mediaArray = entities.getJSONArray("media");

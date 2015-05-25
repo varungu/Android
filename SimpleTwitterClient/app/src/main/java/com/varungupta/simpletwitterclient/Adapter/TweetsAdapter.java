@@ -1,6 +1,7 @@
 package com.varungupta.simpletwitterclient.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 import com.varungupta.simpletwitterclient.Model.Tweet;
 import com.varungupta.simpletwitterclient.R;
+import com.varungupta.simpletwitterclient.TwitterApplication;
+
+import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
@@ -57,6 +63,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             viewHolder = (TimelineItemViewHolder)convertView.getTag();
         }
 
+        final TimelineItemViewHolder finalViewHolder = viewHolder;
         // Load profile photo
         // ivProfilePhoto.setImageResource(0) will clear the last image in case convertView is reused
         viewHolder.iv_timeline_item_icon.setImageResource(0);
@@ -69,7 +76,11 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 
         viewHolder.iv_timeline_item_embedded_photo.setImageResource(0);
         if (tweet.embedded_photo_url != null) {
+            viewHolder.iv_timeline_item_embedded_photo.setVisibility(View.VISIBLE);
             Picasso.with(getContext()).load(tweet.embedded_photo_url).into(viewHolder.iv_timeline_item_embedded_photo);
+        }
+        else {
+            viewHolder.iv_timeline_item_embedded_photo.setVisibility(View.GONE);
         }
 
         if (tweet.retweet_user != null) {
@@ -85,11 +96,99 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tv_timeline_item_reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onReplyClicked(tweet.user_screen_name);
+                String text = tweet.user_screen_name + " ";
+                if (tweet.retweet_user_screen_name != null) {
+                    text += tweet.retweet_user_screen_name + " ";
+                }
+                listener.onReplyClicked(text);
             }
         });
+
         viewHolder.tv_timeline_item_retweet.setText(String.valueOf(tweet.retweet_count));
+        if (tweet.retweeted) {
+            viewHolder.tv_timeline_item_retweet.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.retweeted, 0, 0, 0);
+            viewHolder.tv_timeline_item_retweet.setTextColor(Color.parseColor("#009900"));
+        }
+        else {
+            viewHolder.tv_timeline_item_retweet.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.retweet, 0, 0, 0);
+            viewHolder.tv_timeline_item_retweet.setTextColor(Color.parseColor("#64000000"));
+        }
+
+        viewHolder.tv_timeline_item_retweet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!tweet.retweeted) {
+                    // retweet here
+                    TwitterApplication.getTwitterClient().reTweet(tweet.id_str, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            finalViewHolder.tv_timeline_item_retweet.setText(String.valueOf(tweet.retweet_count + 1));
+                            finalViewHolder.tv_timeline_item_retweet.setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.retweeted, 0, 0, 0);
+                            finalViewHolder.tv_timeline_item_retweet.setTextColor(Color.parseColor("#009900"));
+                        }
+                    });
+                }
+            }
+        });
+
         viewHolder.tv_timeline_item_favorite.setText(String.valueOf(tweet.favourite_count));
+        if (tweet.favorited) {
+            viewHolder.tv_timeline_item_favorite.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.favotited, 0, 0, 0);
+            viewHolder.tv_timeline_item_favorite.setTextColor(Color.parseColor("#FFAA00"));
+        }
+        else {
+            viewHolder.tv_timeline_item_favorite.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.favorite, 0, 0, 0);
+            viewHolder.tv_timeline_item_favorite.setTextColor(Color.parseColor("#64000000"));
+        }
+        viewHolder.tv_timeline_item_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!tweet.favorited) {
+                    TwitterApplication.getTwitterClient().addTofavorite(tweet.id, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            finalViewHolder.tv_timeline_item_favorite.setText(String.valueOf(tweet.favourite_count + 1));
+                            finalViewHolder.tv_timeline_item_favorite.setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.favotited, 0, 0, 0);
+                            finalViewHolder.tv_timeline_item_favorite.setTextColor(Color.parseColor("#FFAA00"));
+                        }
+                    });
+                }
+            }
+        });
+
+        if (tweet.user_following) {
+            viewHolder.tv_timeline_item_add_friend.setVisibility(View.GONE);
+            // viewHolder.tv_timeline_item_add_friend.setCompoundDrawablesWithIntrinsicBounds(
+            //         R.drawable.following, 0, 0, 0);
+            // viewHolder.tv_timeline_item_add_friend.setTextColor(Color.parseColor("#55ACEE"));
+        }
+        else {
+            viewHolder.tv_timeline_item_add_friend.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.follow, 0, 0, 0);
+            viewHolder.tv_timeline_item_add_friend.setTextColor(Color.parseColor("#FFAA00"));
+        }
+        viewHolder.tv_timeline_item_add_friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!tweet.user_following) {
+                    // Start following user here
+                    TwitterApplication.getTwitterClient().followUser(tweet.user_id, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            finalViewHolder.tv_timeline_item_add_friend.setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.following, 0, 0, 0);
+                            finalViewHolder.tv_timeline_item_add_friend.setTextColor(Color.parseColor("#55ACEE"));
+                        }
+                    });
+                }
+            }
+        });
 
 
 
