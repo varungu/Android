@@ -78,7 +78,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             return String.format("%dh", timeDiff/hour);
         }
         if (timeDiff < week){
-            return String.format("%dm", timeDiff/day);
+            return String.format("%dd", timeDiff/day);
         }
         return String.format("%dw", timeDiff/week);
     }

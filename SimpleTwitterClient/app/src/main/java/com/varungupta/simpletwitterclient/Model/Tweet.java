@@ -17,6 +17,7 @@ public class Tweet extends Model implements Serializable {
     // Define database columns and associated fields
     @Column(name = "id_str")
     public String id_str;
+    public long id;
     @Column(name = "created_at")
     public long created_at;
     @Column(name = "text")
@@ -131,6 +132,7 @@ public class Tweet extends Model implements Serializable {
 
              */
             this.id_str = object.getString("id_str");
+            this.id = object.getLong("id");
             this.created_at = Date.parse(object.getString("created_at"));
             this.text = object.getString("text");
 

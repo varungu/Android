@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.varungupta.simpletwitterclient.TwitterApplication;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -26,6 +29,7 @@ public class TimelineActivity extends ActionBarActivity {
     TwitterClient twitterClient;
     ArrayList<Tweet> tweets;
     TweetsAdapter tweetsAdapter;
+    boolean loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,28 @@ public class TimelineActivity extends ActionBarActivity {
         ListView lvTimeline = (ListView) findViewById(R.id.lvTimeline);
         lvTimeline.setAdapter(tweetsAdapter);
 
-        getTweets();
+        getTweets(0);
+
+        // Add infinite scroll
+        lvTimeline.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (!loading) {
+                    if (firstVisibleItem + visibleItemCount + 5 >= totalItemCount) {
+                        // User has less than 5 items left to scroll, load more
+                        if (tweets.size() > 0) {
+                            Tweet lastTweet = tweets.get(tweets.size() - 1);
+                            getTweets(lastTweet.id - 1);
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
@@ -72,16 +97,27 @@ public class TimelineActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getTweets() {
-        twitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+    private void getTweets(long max_id) {
+        loading = true;
+        twitterClient.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 tweetsAdapter.addAll(Tweet.fromJson(response));
+                loading = false;
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.e("Tweets", responseString);
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
+                loading = false;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e("Tweets", errorResponse.toString());
+                Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
+                loading = false;
             }
         });
     }
