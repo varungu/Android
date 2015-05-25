@@ -114,6 +114,7 @@ public class TimelineActivity extends ActionBarActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
 
+                Log.i("tweets", response.toString());
                 if (max_id == 0) {
                     tweetsAdapter.clear();
                 }

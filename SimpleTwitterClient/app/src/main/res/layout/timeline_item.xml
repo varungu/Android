@@ -6,17 +6,27 @@
 
     <RelativeLayout
         android:id="@+id/rl_timeline_item_icons"
-        android:layout_width="wrap_content"
+        android:layout_width="84dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:minWidth="64dp"
         android:padding="10dp">
+        <ImageView
+            android:id="@+id/iv_timeline_item_retweeted_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/retweet"
+            android:layout_marginBottom="5dp"/>
         <ImageView
             android:id="@+id/iv_timeline_item_icon"
             android:layout_width="64dp"
-            android:layout_height="64dp"/>
+            android:layout_height="64dp"
+            android:layout_below="@+id/iv_timeline_item_retweeted_icon"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl_timeline_item_content"
@@ -27,10 +37,21 @@
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/rl_timeline_item_icons"
         android:padding="10dp">
+        <TextView
+            android:id="@+id/tv_timeline_item_retweeted"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:maxLines="1"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="5dp" />
         <RelativeLayout
             android:id="@+id/rl_timeline_item_content_topbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_timeline_item_retweeted">
             <TextView
                 android:id="@+id/tv_timeline_item_username"
                 android:layout_width="wrap_content"

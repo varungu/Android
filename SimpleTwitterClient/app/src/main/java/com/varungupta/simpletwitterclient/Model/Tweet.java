@@ -18,6 +18,8 @@ public class Tweet extends Model implements Serializable {
     @Column(name = "id_str")
     public String id_str;
     public long id;
+    public boolean retweeted;
+    public String retweet_user;
     @Column(name = "created_at")
     public long created_at;
     @Column(name = "text")
@@ -37,9 +39,7 @@ public class Tweet extends Model implements Serializable {
         super();
     }
 
-    public Tweet(JSONObject object){
-        super();
-
+    public static Tweet CreateTweet(JSONObject object){
         try {
             /*
               {
@@ -131,20 +131,34 @@ public class Tweet extends Model implements Serializable {
               },
 
              */
-            this.id_str = object.getString("id_str");
-            this.id = object.getLong("id");
-            this.created_at = Date.parse(object.getString("created_at"));
-            this.text = object.getString("text");
+            // Find re-tweet information
 
-            JSONObject user = object.getJSONObject("user");
-            this.user_name = user.getString("name");
-            this.user_profile_image_url = user.getString("profile_image_url");
-            this.user_id_str = user.getString("id_str");
-            this.user_screen_name = "@" + user.getString("screen_name");
+            if (object.has("retweeted_status")) {
+                JSONObject retweeted_status = object.getJSONObject("retweeted_status");
+                Tweet newTweet = CreateTweet(retweeted_status);
+                newTweet.retweet_user = object.getJSONObject("user").getString("name");
+                return newTweet;
+            }
+            else {
+                Tweet tweet = new Tweet();
+                tweet.retweet_user = null;
+                tweet.id_str = object.getString("id_str");
+                tweet.id = object.getLong("id");
+                tweet.created_at = Date.parse(object.getString("created_at"));
+                tweet.text = object.getString("text");
+
+                JSONObject user = object.getJSONObject("user");
+                tweet.user_name = user.getString("name");
+                tweet.user_profile_image_url = user.getString("profile_image_url");
+                tweet.user_id_str = user.getString("id_str");
+                tweet.user_screen_name = "@" + user.getString("screen_name");
+                return tweet;
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public static ArrayList<Tweet> fromJson(JSONArray jsonArray) {
@@ -159,7 +173,7 @@ public class Tweet extends Model implements Serializable {
                 continue;
             }
 
-            Tweet tweet = new Tweet(tweetJson);
+            Tweet tweet = CreateTweet(tweetJson);
             //tweet.save();
             tweets.add(tweet);
         }

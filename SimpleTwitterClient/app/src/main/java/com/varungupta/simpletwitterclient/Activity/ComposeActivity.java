@@ -91,7 +91,7 @@ public class ComposeActivity extends ActionBarActivity {
                 twitterClient.addTweet(text, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Tweet newTweet = new Tweet(response);
+                        Tweet newTweet = Tweet.CreateTweet(response);
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("tweet",newTweet);
                         setResult(RESULT_OK, returnIntent);

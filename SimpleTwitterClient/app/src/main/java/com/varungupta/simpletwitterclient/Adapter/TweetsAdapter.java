@@ -37,6 +37,8 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tv_timeline_item_timestamp = (TextView)convertView.findViewById(R.id.tv_timeline_item_timestamp);
             viewHolder.tv_timeline_item_user_screen_name = (TextView) convertView.findViewById(R.id.tv_timeline_item_user_screen_name);
             viewHolder.tv_timeline_item_text = (TextView) convertView.findViewById(R.id.tv_timeline_item_text);
+            viewHolder.iv_timeline_item_retweeted_icon = (ImageView) convertView.findViewById(R.id.iv_timeline_item_retweeted_icon);
+            viewHolder.tv_timeline_item_retweeted = (TextView) convertView.findViewById(R.id.tv_timeline_item_retweeted);
 
             convertView.setTag(viewHolder);
         }
@@ -54,6 +56,15 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tv_timeline_item_timestamp.setText(getRelativeTime(tweet.created_at));
         viewHolder.tv_timeline_item_text.setText(tweet.text);
 
+        if (tweet.retweet_user != null) {
+            viewHolder.iv_timeline_item_retweeted_icon.setVisibility(View.VISIBLE);
+            viewHolder.tv_timeline_item_retweeted.setVisibility(View.VISIBLE);
+            viewHolder.tv_timeline_item_retweeted.setText(tweet.retweet_user + " retweeted");
+        }
+        else {
+            viewHolder.iv_timeline_item_retweeted_icon.setVisibility(View.GONE);
+            viewHolder.tv_timeline_item_retweeted.setVisibility(View.GONE);
+        }
         return convertView;
     }
 
