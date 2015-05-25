@@ -74,6 +74,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:textSize="15sp"
-            android:layout_below="@+id/rl_timeline_item_content_topbar"/>
+            android:layout_below="@+id/rl_timeline_item_content_topbar"
+            android:autoLink="all"
+            android:linksClickable="true"
+            />
     </RelativeLayout>
 </RelativeLayout>

@@ -117,7 +117,7 @@ public class TimelineActivity extends ActionBarActivity {
                 if (max_id == 0) {
                     tweetsAdapter.clear();
                 }
-                
+
                 tweetsAdapter.addAll(Tweet.fromJson(response));
                 loading = false;
                 swipeContainer.setRefreshing(false);
