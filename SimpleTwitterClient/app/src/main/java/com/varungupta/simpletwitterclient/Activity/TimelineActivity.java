@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class TimelineActivity extends ActionBarActivity {
+public class TimelineActivity extends ActionBarActivity implements TweetsAdapter.TweetsAdapterListener{
 
     TwitterClient twitterClient;
     ArrayList<Tweet> tweets;
@@ -45,7 +45,7 @@ public class TimelineActivity extends ActionBarActivity {
 
         tweets = new ArrayList<Tweet>();
         tweets.addAll(Tweet.getAll());
-        tweetsAdapter = new TweetsAdapter(this, tweets);
+        tweetsAdapter = new TweetsAdapter(this, this, tweets);
 
         ListView lvTimeline = (ListView) findViewById(R.id.lvTimeline);
         lvTimeline.setAdapter(tweetsAdapter);
@@ -99,10 +99,7 @@ public class TimelineActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_compose) {
-            Intent intent = new Intent(this, ComposeActivity.class);
-            startActivityForResult(intent, 20);
-
-            overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
+            startComposeActivity("");
             return true;
         }
 
@@ -150,5 +147,18 @@ public class TimelineActivity extends ActionBarActivity {
                 tweetsAdapter.notifyDataSetChanged();
             }
         }
+    }
+
+    @Override
+    public void onReplyClicked(String usersInfo) {
+        startComposeActivity(usersInfo);
+    }
+
+    private void startComposeActivity(String usersInfo) {
+        Intent intent = new Intent(this, ComposeActivity.class);
+        intent.putExtra("info", usersInfo);
+        startActivityForResult(intent, 20);
+
+        overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
     }
 }

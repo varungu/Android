@@ -19,8 +19,14 @@ import java.util.List;
  * Created by varungupta on 5/23/15.
  */
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
-    public TweetsAdapter(Context context, List<Tweet> objects) {
+    public interface TweetsAdapterListener {
+        void onReplyClicked(String usersInfo);
+    }
+
+    TweetsAdapterListener listener;
+    public TweetsAdapter(TweetsAdapterListener listener, Context context, List<Tweet> objects) {
         super(context, R.layout.timeline_item, objects);
+        this.listener = listener;
     }
 
     @Override
@@ -40,6 +46,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             viewHolder.iv_timeline_item_retweeted_icon = (ImageView) convertView.findViewById(R.id.iv_timeline_item_retweeted_icon);
             viewHolder.tv_timeline_item_retweeted = (TextView) convertView.findViewById(R.id.tv_timeline_item_retweeted);
             viewHolder.iv_timeline_item_embedded_photo = (ImageView) convertView.findViewById(R.id.iv_timeline_item_embedded_photo);
+            viewHolder.tv_timeline_item_reply = (TextView) convertView.findViewById(R.id.tv_timeline_item_reply);
 
             convertView.setTag(viewHolder);
         }
@@ -71,6 +78,14 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             viewHolder.iv_timeline_item_retweeted_icon.setVisibility(View.GONE);
             viewHolder.tv_timeline_item_retweeted.setVisibility(View.GONE);
         }
+
+        viewHolder.tv_timeline_item_reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onReplyClicked(tweet.user_screen_name);
+            }
+        });
+
         return convertView;
     }
 

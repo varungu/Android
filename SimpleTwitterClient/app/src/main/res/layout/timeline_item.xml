@@ -105,5 +105,52 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_timeline_item_text"
             android:layout_marginTop="10dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_timeline_item_embedded_photo"
+            android:layout_margin="10dp">
+            <TextView
+                android:id="@+id/tv_timeline_item_reply"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:drawableLeft="@drawable/reply"
+                android:singleLine="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
+            <TextView
+                android:id="@+id/tv_timeline_item_retweet"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:drawableLeft="@drawable/retweet"
+                android:singleLine="true"
+                android:layout_toRightOf="@id/tv_timeline_item_reply"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
+            <TextView
+                android:id="@+id/tv_timeline_item_favorite"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:drawableLeft="@drawable/favorite"
+                android:singleLine="true"
+                android:layout_toRightOf="@id/tv_timeline_item_retweet"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
+            <TextView
+                android:id="@+id/tv_timeline_item_add_friend"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:drawableRight="@drawable/follow"
+                android:singleLine="true"
+                android:layout_toRightOf="@id/tv_timeline_item_retweet"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

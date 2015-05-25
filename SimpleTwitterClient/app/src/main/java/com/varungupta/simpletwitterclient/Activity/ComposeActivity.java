@@ -71,6 +71,8 @@ public class ComposeActivity extends ActionBarActivity {
 
             }
         });
+        et_compose_tweet.setText(getIntent().getExtras().getString("info"));
+        et_compose_tweet.setSelection(et_compose_tweet.getText().length());
 
         ImageView iv_compose_actionbar_cancel = (ImageView) findViewById(R.id.iv_compose_actionbar_cancel);
         iv_compose_actionbar_cancel.setOnClickListener(new View.OnClickListener() {
