@@ -25,6 +25,8 @@ public class Tweet extends Model implements Serializable {
     public long id;
     @Column(name = "retweet_user")
     public String retweet_user;
+    @Column(name = "retweet_user_screen_name")
+    public String retweet_user_screen_name;
     @Column(name = "created_at")
     public long created_at;
     @Column(name = "text")
@@ -39,6 +41,16 @@ public class Tweet extends Model implements Serializable {
     public String user_screen_name;
     @Column(name  = "embedded_photo_url")
     public String embedded_photo_url;
+    @Column(name  = "favorited")
+    public boolean favorited;
+    @Column(name  = "retweeted")
+    public boolean retweeted;
+    @Column(name  = "retweet_count")
+    public int retweet_count;
+    @Column(name  = "favourites_count")
+    public int favourite_count;
+    @Column(name  = "user_following")
+    public boolean user_following;
 
 
     // Make sure to always define this constructor with no arguments
@@ -144,6 +156,7 @@ public class Tweet extends Model implements Serializable {
                 JSONObject retweeted_status = object.getJSONObject("retweeted_status");
                 Tweet newTweet = CreateTweet(retweeted_status);
                 newTweet.retweet_user = object.getJSONObject("user").getString("name");
+                newTweet.retweet_user_screen_name = object.getJSONObject("user").getString("screen_name");
                 return newTweet;
             }
             else {
@@ -153,12 +166,18 @@ public class Tweet extends Model implements Serializable {
                 tweet.id = object.getLong("id");
                 tweet.created_at = Date.parse(object.getString("created_at"));
                 tweet.text = object.getString("text");
+                tweet.favorited = object.getBoolean("favorited");
+                tweet.retweeted = object.getBoolean("retweeted");
+                tweet.retweet_count = object.getInt("retweet_count");
+                tweet.favourite_count = object.getInt("favorite_count");
+
 
                 JSONObject user = object.getJSONObject("user");
                 tweet.user_name = user.getString("name");
                 tweet.user_profile_image_url = user.getString("profile_image_url");
                 tweet.user_id_str = user.getString("id_str");
                 tweet.user_screen_name = "@" + user.getString("screen_name");
+                tweet.user_following = user.getBoolean("following");
 
                 JSONObject entities = object.getJSONObject("entities");
                 if (entities.has("media")) {

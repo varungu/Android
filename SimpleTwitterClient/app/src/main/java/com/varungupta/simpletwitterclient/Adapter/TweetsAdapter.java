@@ -47,6 +47,9 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tv_timeline_item_retweeted = (TextView) convertView.findViewById(R.id.tv_timeline_item_retweeted);
             viewHolder.iv_timeline_item_embedded_photo = (ImageView) convertView.findViewById(R.id.iv_timeline_item_embedded_photo);
             viewHolder.tv_timeline_item_reply = (TextView) convertView.findViewById(R.id.tv_timeline_item_reply);
+            viewHolder.tv_timeline_item_retweet = (TextView) convertView.findViewById(R.id.tv_timeline_item_retweet);
+            viewHolder.tv_timeline_item_favorite = (TextView) convertView.findViewById(R.id.tv_timeline_item_favorite);
+            viewHolder.tv_timeline_item_add_friend = (TextView) convertView.findViewById(R.id.tv_timeline_item_add_friend);
 
             convertView.setTag(viewHolder);
         }
@@ -85,6 +88,10 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
                 listener.onReplyClicked(tweet.user_screen_name);
             }
         });
+        viewHolder.tv_timeline_item_retweet.setText(String.valueOf(tweet.retweet_count));
+        viewHolder.tv_timeline_item_favorite.setText(String.valueOf(tweet.favourite_count));
+
+
 
         return convertView;
     }

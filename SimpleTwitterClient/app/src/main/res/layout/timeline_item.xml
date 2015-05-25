@@ -119,7 +119,9 @@
                 android:singleLine="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"
+                android:gravity="left|center_vertical"
+                android:drawablePadding="5dp"/>
             <TextView
                 android:id="@+id/tv_timeline_item_retweet"
                 android:layout_width="120dp"
@@ -129,7 +131,9 @@
                 android:singleLine="true"
                 android:layout_toRightOf="@id/tv_timeline_item_reply"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"
+                android:gravity="left|center_vertical"
+                android:drawablePadding="5dp"/>
             <TextView
                 android:id="@+id/tv_timeline_item_favorite"
                 android:layout_width="120dp"
@@ -139,7 +143,9 @@
                 android:singleLine="true"
                 android:layout_toRightOf="@id/tv_timeline_item_retweet"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"
+                android:gravity="left|center_vertical"
+                android:drawablePadding="5dp"/>
             <TextView
                 android:id="@+id/tv_timeline_item_add_friend"
                 android:layout_width="120dp"
@@ -150,7 +156,9 @@
                 android:layout_toRightOf="@id/tv_timeline_item_retweet"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:gravity="left|center_vertical"
+                android:drawablePadding="5dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
