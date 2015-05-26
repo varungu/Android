@@ -52,7 +52,7 @@ The following **additional** features are implemented:
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
-// TODO - Add video walkthrough
+![demo](https://github.com/varungu/Android-Bootcamp/blob/master/SimpleTwitterClient/DEMO.gif?raw=true)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
