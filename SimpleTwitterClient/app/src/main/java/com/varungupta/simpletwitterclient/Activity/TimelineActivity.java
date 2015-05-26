@@ -33,6 +33,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
     TweetsAdapter tweetsAdapter;
     boolean loading;
     private SwipeRefreshLayout swipeContainer;
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_timeline, menu);
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
         return true;
     }
 
@@ -114,6 +116,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
 
     private void getTweets(final long max_id) {
         loading = true;
+        setProgressItemVisibility(true);
         twitterClient.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -127,6 +130,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
                 tweetsAdapter.addAll(Tweet.fromJson(response));
                 loading = false;
                 swipeContainer.setRefreshing(false);
+                setProgressItemVisibility(false);
             }
 
             @Override
@@ -134,6 +138,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
                 loading = false;
                 swipeContainer.setRefreshing(false);
+                setProgressItemVisibility(false);
             }
 
             @Override
@@ -141,8 +146,15 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
                 Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
                 loading = false;
                 swipeContainer.setRefreshing(false);
+                setProgressItemVisibility(false);
             }
         });
+    }
+
+    private void setProgressItemVisibility(boolean value) {
+        if (miActionProgressItem != null) {
+            miActionProgressItem.setVisible(value);
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
