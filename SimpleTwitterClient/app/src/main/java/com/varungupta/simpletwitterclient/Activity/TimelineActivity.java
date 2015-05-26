@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TimelineActivity extends ActionBarActivity implements TweetsAdapter.TweetsAdapterListener{
 
@@ -44,7 +45,12 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
         twitterClient = TwitterApplication.getTwitterClient();
 
         tweets = new ArrayList<Tweet>();
-        tweets.addAll(Tweet.getAll());
+
+        List<Tweet> tweetsFromDatabase = Tweet.getAll();
+        if (tweetsFromDatabase != null) {
+            tweets.addAll(Tweet.getAll());
+        }
+
         tweetsAdapter = new TweetsAdapter(this, this, tweets);
 
         ListView lvTimeline = (ListView) findViewById(R.id.lvTimeline);
@@ -115,6 +121,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
                 Log.i("tweets", response.toString());
                 if (max_id == 0) {
                     tweetsAdapter.clear();
+                    Tweet.deleteAll();
                 }
 
                 tweetsAdapter.addAll(Tweet.fromJson(response));

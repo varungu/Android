@@ -1,10 +1,12 @@
 package com.varungupta.simpletwitterclient.Model;
 
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import org.json.JSONArray;
@@ -225,11 +227,28 @@ public class Tweet extends Model implements Serializable {
 
     // ...
     public static List<Tweet> getAll() {
-        // This is how you execute a query
-        return new Select()
-                .all()
-                .from(Tweet.class)
-                .execute();
+        try {
+            return new Select()
+                    .all()
+                    .from(Tweet.class)
+                    .execute();
+        }
+        catch (SQLiteException ex) {
+            Log.e("delete tweets", ex.toString());
+        }
+
+        return null;
+    }
+
+    public static void deleteAll() {
+        try {
+            new Delete()
+                    .from(Tweet.class)
+                    .execute();
+        }
+        catch (SQLiteException ex) {
+            Log.e("delete tweets", ex.toString());
+        }
     }
 
 }
