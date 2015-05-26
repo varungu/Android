@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
     public interface TweetsAdapterListener {
-        void onReplyClicked(String usersInfo);
+        void onReplyClicked(String usersInfo, long in_reply_to_status_id);
     }
 
     TweetsAdapterListener listener;
@@ -100,7 +100,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
                 if (tweet.retweet_user_screen_name != null) {
                     text += tweet.retweet_user_screen_name + " ";
                 }
-                listener.onReplyClicked(text);
+                listener.onReplyClicked(text, tweet.id);
             }
         });
 

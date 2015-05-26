@@ -30,12 +30,14 @@ public class ComposeActivity extends ActionBarActivity {
 
     TwitterClient twitterClient;
     EditText et_compose_tweet;
+    long in_reply_to_status_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
 
+        in_reply_to_status_id = getIntent().getExtras().getLong("in_reply_to_status_id");
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
 
@@ -90,7 +92,7 @@ public class ComposeActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 String text = et_compose_tweet.getText().toString();
-                twitterClient.addTweet(text, new JsonHttpResponseHandler() {
+                twitterClient.addTweet(text, in_reply_to_status_id, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Tweet newTweet = Tweet.CreateTweet(response);

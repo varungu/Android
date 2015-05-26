@@ -99,7 +99,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_compose) {
-            startComposeActivity("");
+            startComposeActivity("", 0);
             return true;
         }
 
@@ -150,13 +150,14 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
     }
 
     @Override
-    public void onReplyClicked(String usersInfo) {
-        startComposeActivity(usersInfo);
+    public void onReplyClicked(String usersInfo, long in_reply_to_status_id) {
+        startComposeActivity(usersInfo, in_reply_to_status_id);
     }
 
-    private void startComposeActivity(String usersInfo) {
+    private void startComposeActivity(String usersInfo, long in_reply_to_status_id) {
         Intent intent = new Intent(this, ComposeActivity.class);
         intent.putExtra("info", usersInfo);
+        intent.putExtra("in_reply_to_status_id", in_reply_to_status_id);
         startActivityForResult(intent, 20);
 
         overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
