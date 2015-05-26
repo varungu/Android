@@ -169,6 +169,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             // viewHolder.tv_timeline_item_add_friend.setTextColor(Color.parseColor("#55ACEE"));
         }
         else {
+            viewHolder.tv_timeline_item_add_friend.setVisibility(View.VISIBLE);
             viewHolder.tv_timeline_item_add_friend.setCompoundDrawablesWithIntrinsicBounds(
                     R.drawable.follow, 0, 0, 0);
             viewHolder.tv_timeline_item_add_friend.setTextColor(Color.parseColor("#FFAA00"));
