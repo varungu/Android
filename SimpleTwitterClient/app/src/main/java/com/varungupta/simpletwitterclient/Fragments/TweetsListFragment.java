@@ -31,6 +31,7 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.Tweets
     // Listener for click on reply
     public interface ITweetsListFragmentListener {
         void onReplyClicked(String usersInfo, long in_reply_to_status_id);
+        void onProfileClicked(long user_id);
     }
 
     // Interface to get tweets
@@ -122,6 +123,11 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.Tweets
     @Override
     public void onReplyClicked(String usersInfo, long in_reply_to_status_id) {
         listener.onReplyClicked(usersInfo, in_reply_to_status_id);
+    }
+
+    @Override
+    public void onProfileClicked(long user_id) {
+        this.listener.onProfileClicked(user_id);
     }
 
     public void addAll(List<Tweet> tweets, boolean clearExisting) {

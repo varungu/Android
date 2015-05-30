@@ -57,9 +57,6 @@
         <activity
             android:name=".Activity.ProfileActivity"
             android:label="@string/title_activity_profile" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Activity.TimelineActivity" />
         </activity>
     </application>
 

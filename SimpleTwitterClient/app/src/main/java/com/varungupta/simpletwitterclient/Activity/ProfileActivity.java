@@ -28,7 +28,7 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
                 new TweetsListFragment.ITweetsGetter() {
                     @Override
                     public void getTweets(long max_id, AsyncHttpResponseHandler handler) {
-                        TwitterApplication.getTwitterClient().getHomeTimeline(user_id, max_id, handler);
+                        TwitterApplication.getTwitterClient().getUserTimeline(user_id, max_id, handler);
                     }
                 },
                 this
@@ -83,5 +83,14 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
         startActivityForResult(intent, 20);
 
         overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
+    }
+
+    @Override
+    public void onProfileClicked(long user_id) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("user_id", user_id);
+        startActivityForResult(intent, 10);
+
+        overridePendingTransition(R.layout.enter_from_right, R.layout.stay_in_place);
     }
 }

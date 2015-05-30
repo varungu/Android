@@ -27,6 +27,7 @@ import java.util.List;
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
     public interface TweetsAdapterListener {
         void onReplyClicked(String usersInfo, long in_reply_to_status_id);
+        void onProfileClicked(long user_id);
     }
 
     TweetsAdapterListener listener;
@@ -68,6 +69,12 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         // ivProfilePhoto.setImageResource(0) will clear the last image in case convertView is reused
         viewHolder.iv_timeline_item_icon.setImageResource(0);
         Picasso.with(getContext()).load(tweet.user_profile_image_url).into(viewHolder.iv_timeline_item_icon);
+        viewHolder.iv_timeline_item_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onProfileClicked(tweet.user_id);
+            }
+        });
 
         viewHolder.tv_timeline_item_username.setText(tweet.user_name);
         viewHolder.tv_timeline_item_user_screen_name.setText(tweet.user_screen_name);

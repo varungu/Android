@@ -54,7 +54,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
                     new TweetsListFragment.ITweetsGetter() {
                         @Override
                         public void getTweets(long max_id, AsyncHttpResponseHandler handler) {
-                            TwitterApplication.getTwitterClient().getHomeTimeline(0, max_id, handler);
+                            TwitterApplication.getTwitterClient().getHomeTimeline(max_id, handler);
                         }
                     },
                     this
@@ -101,11 +101,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
             return true;
         }
         else if (id == R.id.action_me){
-            Intent intent = new Intent(this, ProfileActivity.class);
-            intent.putExtra("user_id", TwitterApplication.getTwitterClient().getAuthenticatedUser().id);
-            startActivityForResult(intent, 10);
-
-            overridePendingTransition(R.layout.enter_from_right, R.layout.exit_to_left);
+            onProfileClicked(TwitterApplication.getTwitterClient().getAuthenticatedUser().id);
         }
 
         return super.onOptionsItemSelected(item);
@@ -124,6 +120,15 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
     @Override
     public void onReplyClicked(String usersInfo, long in_reply_to_status_id) {
         startComposeActivity(usersInfo, in_reply_to_status_id);
+    }
+
+    @Override
+    public void onProfileClicked(long user_id) {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("user_id", user_id);
+        startActivityForResult(intent, 10);
+
+        overridePendingTransition(R.layout.enter_from_right, R.layout.stay_in_place);
     }
 
     private void startComposeActivity(String usersInfo, long in_reply_to_status_id) {
