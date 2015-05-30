@@ -2,99 +2,89 @@ package com.varungupta.simpletwitterclient.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AbsListView;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.varungupta.simpletwitterclient.Adapter.TweetsAdapter;
+import com.astuetz.PagerSlidingTabStrip;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.varungupta.simpletwitterclient.Fragments.TweetsListFragment;
 import com.varungupta.simpletwitterclient.Model.Tweet;
 import com.varungupta.simpletwitterclient.R;
-import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
 import com.varungupta.simpletwitterclient.TwitterApplication;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONObject;
+public class TimelineActivity extends ActionBarActivity implements TweetsListFragment.ITweetsListFragmentListener {
 
-import java.util.ArrayList;
-import java.util.List;
+    TweetsListFragment homeTweetsListFragment;
+    TweetsListFragment notificationsTweetsListFragment;
 
-public class TimelineActivity extends ActionBarActivity implements TweetsAdapter.TweetsAdapterListener{
-
-    TwitterClient twitterClient;
-    ArrayList<Tweet> tweets;
-    TweetsAdapter tweetsAdapter;
-    boolean loading;
-    private SwipeRefreshLayout swipeContainer;
-    MenuItem miActionProgressItem;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        homeTweetsListFragment = null;
+        notificationsTweetsListFragment = null;
+
+        // Set action bar
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
 
-        twitterClient = TwitterApplication.getTwitterClient();
+        // Set tabs and viewpager
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new TweetsPagerAdapter(getSupportFragmentManager(), this));
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabStrip.setViewPager(viewPager);
 
-        tweets = new ArrayList<Tweet>();
 
-        List<Tweet> tweetsFromDatabase = Tweet.getAll();
-        if (tweetsFromDatabase != null) {
-            tweets.addAll(Tweet.getAll());
+    }
+
+    public TweetsListFragment getFragment(int position) {
+        if (position == 0) {
+            // Return home timeline fragment
+            if (homeTweetsListFragment == null){
+                homeTweetsListFragment = TweetsListFragment.GetInstance(
+                    new TweetsListFragment.ITweetsGetter() {
+                        @Override
+                        public void getTweets(long max_id, AsyncHttpResponseHandler handler) {
+                            TwitterApplication.getTwitterClient().getHomeTimeline(max_id, handler);
+                        }
+                    },
+                    this
+                );
+            }
+
+            return homeTweetsListFragment;
+        } else if (position == 1){
+            if (notificationsTweetsListFragment == null) {
+                notificationsTweetsListFragment = TweetsListFragment.GetInstance(
+                        new TweetsListFragment.ITweetsGetter() {
+                            @Override
+                            public void getTweets(long max_id, AsyncHttpResponseHandler handler) {
+                                TwitterApplication.getTwitterClient().getMentionsTimeline(max_id, handler);
+                            }
+                        },
+                        this
+                );
+            }
+
+            return notificationsTweetsListFragment;
         }
 
-        tweetsAdapter = new TweetsAdapter(this, this, tweets);
-
-        ListView lvTimeline = (ListView) findViewById(R.id.lvTimeline);
-        lvTimeline.setAdapter(tweetsAdapter);
-
-        getTweets(0);
-
-        // Add infinite scroll
-        lvTimeline.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (!loading) {
-                    if (firstVisibleItem + visibleItemCount + 5 >= totalItemCount) {
-                        // User has less than 5 items left to scroll, load more
-                        if (tweets.size() > 0) {
-                            Tweet lastTweet = tweets.get(tweets.size() - 1);
-                            getTweets(lastTweet.id - 1);
-                        }
-                    }
-                }
-            }
-        });
-
-        // Add swipe to refresh
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getTweets(0);
-            }
-        });
+        return null;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_timeline, menu);
-        miActionProgressItem = menu.findItem(R.id.miActionProgress);
         return true;
     }
 
@@ -114,56 +104,12 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
         return super.onOptionsItemSelected(item);
     }
 
-    private void getTweets(final long max_id) {
-        loading = true;
-        setProgressItemVisibility(true);
-        twitterClient.getHomeTimeline(max_id, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-
-                Log.i("tweets", response.toString());
-                if (max_id == 0) {
-                    tweetsAdapter.clear();
-                    Tweet.deleteAll();
-                }
-
-                tweetsAdapter.addAll(Tweet.fromJson(response));
-                loading = false;
-                swipeContainer.setRefreshing(false);
-                setProgressItemVisibility(false);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
-                loading = false;
-                swipeContainer.setRefreshing(false);
-                setProgressItemVisibility(false);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Toast.makeText(getBaseContext(), "Failed to get tweets", Toast.LENGTH_SHORT).show();
-                loading = false;
-                swipeContainer.setRefreshing(false);
-                setProgressItemVisibility(false);
-            }
-        });
-    }
-
-    private void setProgressItemVisibility(boolean value) {
-        if (miActionProgressItem != null) {
-            miActionProgressItem.setVisible(value);
-        }
-    }
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 20) {
             if(resultCode == RESULT_OK){
                 Tweet tweet = (Tweet)data.getSerializableExtra("tweet");
-                tweets.add(0, tweet);
-                tweetsAdapter.notifyDataSetChanged();
+                getFragment(0).add(0, tweet);
             }
         }
     }
@@ -180,5 +126,52 @@ public class TimelineActivity extends ActionBarActivity implements TweetsAdapter
         startActivityForResult(intent, 20);
 
         overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
+    }
+
+    public class TweetsPagerAdapter extends FragmentPagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
+        TimelineActivity timelineActivity;
+        String[] tabsTitles = new String[]{"Home", "Notifications"};
+
+        public TweetsPagerAdapter(FragmentManager fragmentManager, TimelineActivity timelineActivity){
+            super(fragmentManager);
+            this.timelineActivity = timelineActivity;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return timelineActivity.getFragment(position);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabsTitles[position];
+        }
+
+
+        @Override
+        public int getCount() {
+            return tabsTitles.length;
+        }
+
+        @Override
+        public int getPageIconResId(int position) {
+            int selectedIndex = timelineActivity.viewPager.getCurrentItem();
+            if (selectedIndex == position){
+                if (position == 0){
+                    return R.drawable.home_selected;
+                }
+                else {
+                    return R.drawable.notifications_selected;
+                }
+            }
+            else{
+                if (position == 0){
+                    return R.drawable.home;
+                }
+                else {
+                    return R.drawable.notifications;
+                }
+            }
+        }
     }
 }
