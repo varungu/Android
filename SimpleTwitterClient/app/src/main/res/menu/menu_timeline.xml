@@ -6,7 +6,7 @@
         android:id="@+id/action_compose"
         android:title="@string/action_compose"
         android:orderInCategory="100"
-        android:icon="@drawable/compose"
+        android:icon="@drawable/compose_new"
         app:showAsAction="always" />
     <item
         android:id="@+id/miActionProgress"
