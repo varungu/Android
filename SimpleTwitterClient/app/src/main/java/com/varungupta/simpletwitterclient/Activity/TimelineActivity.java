@@ -128,7 +128,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
         overridePendingTransition(R.layout.enter_from_bottom, R.layout.stay_in_place);
     }
 
-    public class TweetsPagerAdapter extends FragmentPagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
+    public class TweetsPagerAdapter extends FragmentPagerAdapter {
         TimelineActivity timelineActivity;
         String[] tabsTitles = new String[]{"Home", "Notifications"};
 
@@ -151,27 +151,6 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
         @Override
         public int getCount() {
             return tabsTitles.length;
-        }
-
-        @Override
-        public int getPageIconResId(int position) {
-            int selectedIndex = timelineActivity.viewPager.getCurrentItem();
-            if (selectedIndex == position){
-                if (position == 0){
-                    return R.drawable.home_selected;
-                }
-                else {
-                    return R.drawable.notifications_selected;
-                }
-            }
-            else{
-                if (position == 0){
-                    return R.drawable.home;
-                }
-                else {
-                    return R.drawable.notifications;
-                }
-            }
         }
     }
 }
