@@ -24,6 +24,7 @@ public class User implements Serializable{
     public String location;
     public String description;
     public String url;
+    public String display_url;
     public int followers_count;
     public int friends_count;
     public boolean verified;
@@ -213,7 +214,7 @@ public class User implements Serializable{
             this.profile_image_url = user.getString("profile_image_url");
             this.location = user.getString("location");
             this.description = user.getString("description");
-            this.url = user.getString("url");
+            this.url = user.getJSONObject("entities").getJSONObject("url").getJSONArray("urls").getJSONObject(0).getString("display_url");
             this.followers_count = user.getInt("followers_count");
             this.friends_count = user.getInt("friends_count");
             this.verified = user.getBoolean("verified");
