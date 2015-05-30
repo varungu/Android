@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 import com.varungupta.simpletwitterclient.Model.Tweet;
+import com.varungupta.simpletwitterclient.Model.User;
 import com.varungupta.simpletwitterclient.R;
 import com.varungupta.simpletwitterclient.TwitterApplication;
 
@@ -27,7 +28,7 @@ import java.util.List;
 public class TweetsAdapter extends ArrayAdapter<Tweet> {
     public interface TweetsAdapterListener {
         void onReplyClicked(String usersInfo, long in_reply_to_status_id);
-        void onProfileClicked(long user_id);
+        void onProfileClicked(User user);
     }
 
     TweetsAdapterListener listener;
@@ -68,16 +69,16 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         // Load profile photo
         // ivProfilePhoto.setImageResource(0) will clear the last image in case convertView is reused
         viewHolder.iv_timeline_item_icon.setImageResource(0);
-        Picasso.with(getContext()).load(tweet.user_profile_image_url).into(viewHolder.iv_timeline_item_icon);
+        Picasso.with(getContext()).load(tweet.user.profile_image_url).into(viewHolder.iv_timeline_item_icon);
         viewHolder.iv_timeline_item_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onProfileClicked(tweet.user_id);
+                listener.onProfileClicked(tweet.user);
             }
         });
 
-        viewHolder.tv_timeline_item_username.setText(tweet.user_name);
-        viewHolder.tv_timeline_item_user_screen_name.setText(tweet.user_screen_name);
+        viewHolder.tv_timeline_item_username.setText(tweet.user.name);
+        viewHolder.tv_timeline_item_user_screen_name.setText(tweet.user.screen_name);
         viewHolder.tv_timeline_item_timestamp.setText(getRelativeTime(tweet.created_at));
         viewHolder.tv_timeline_item_text.setText(tweet.text);
 
@@ -103,7 +104,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tv_timeline_item_reply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text = tweet.user_screen_name + " ";
+                String text = tweet.user.screen_name + " ";
                 if (tweet.retweet_user_screen_name != null) {
                     text += tweet.retweet_user_screen_name + " ";
                 }
@@ -169,7 +170,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             }
         });
 
-        if (tweet.user_following) {
+        if (tweet.user.following) {
             viewHolder.tv_timeline_item_add_friend.setVisibility(View.GONE);
             // viewHolder.tv_timeline_item_add_friend.setCompoundDrawablesWithIntrinsicBounds(
             //         R.drawable.following, 0, 0, 0);
@@ -184,9 +185,9 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tv_timeline_item_add_friend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tweet.user_following) {
+                if (!tweet.user.following) {
                     // Start following user here
-                    TwitterApplication.getTwitterClient().followUser(tweet.user_id, new JsonHttpResponseHandler() {
+                    TwitterApplication.getTwitterClient().followUser(tweet.user.id, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             finalViewHolder.tv_timeline_item_add_friend.setCompoundDrawablesWithIntrinsicBounds(

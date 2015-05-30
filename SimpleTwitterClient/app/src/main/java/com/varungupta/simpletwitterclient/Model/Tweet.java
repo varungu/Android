@@ -21,10 +21,10 @@ import java.util.List;
 @Table(name = "Tweets")
 public class Tweet extends Model implements Serializable {
     // Define database columns and associated fields
-    @Column(name = "id_str", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    public String id_str;
     @Column(name = "id_long", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public long id;
+    @Column(name = "id_str", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    public String id_str;
     @Column(name = "retweet_user")
     public String retweet_user;
     @Column(name = "retweet_user_screen_name")
@@ -33,16 +33,6 @@ public class Tweet extends Model implements Serializable {
     public long created_at;
     @Column(name = "text")
     public String text;
-    @Column(name = "user_name")
-    public String user_name;
-    @Column(name = "user_profile_image_url")
-    public String user_profile_image_url;
-    @Column(name = "user_id_str")
-    public String user_id_str;
-    @Column(name = "user_id")
-    public long user_id;
-    @Column(name = "user_screen_name")
-    public String user_screen_name;
     @Column(name  = "embedded_photo_url")
     public String embedded_photo_url;
     @Column(name  = "favorited")
@@ -53,9 +43,8 @@ public class Tweet extends Model implements Serializable {
     public int retweet_count;
     @Column(name  = "favourites_count")
     public int favourite_count;
-    @Column(name  = "user_following")
-    public boolean user_following;
-
+    @Column(name = "user")
+    public User user;
 
     // Make sure to always define this constructor with no arguments
     public Tweet() {
@@ -175,15 +164,6 @@ public class Tweet extends Model implements Serializable {
                 tweet.retweet_count = object.getInt("retweet_count");
                 tweet.favourite_count = object.getInt("favorite_count");
 
-
-                JSONObject user = object.getJSONObject("user");
-                tweet.user_name = user.getString("name");
-                tweet.user_profile_image_url = user.getString("profile_image_url");
-                tweet.user_id_str = user.getString("id_str");
-                tweet.user_id = user.getLong("id");
-                tweet.user_screen_name = "@" + user.getString("screen_name");
-                tweet.user_following = user.getBoolean("following");
-
                 tweet.embedded_photo_url = null;
                 JSONObject entities = object.getJSONObject("entities");
                 if (entities.has("media")) {
@@ -195,6 +175,8 @@ public class Tweet extends Model implements Serializable {
                         }
                     }
                 }
+
+                tweet.user = new User(object.getJSONObject("user"));
 
                 return tweet;
             }

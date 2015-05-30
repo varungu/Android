@@ -15,6 +15,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.varungupta.simpletwitterclient.Fragments.TweetsListFragment;
 import com.varungupta.simpletwitterclient.Model.Tweet;
+import com.varungupta.simpletwitterclient.Model.User;
 import com.varungupta.simpletwitterclient.R;
 import com.varungupta.simpletwitterclient.TwitterApplication;
 
@@ -101,7 +102,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
             return true;
         }
         else if (id == R.id.action_me){
-            onProfileClicked(TwitterApplication.getTwitterClient().getAuthenticatedUser().id);
+            onProfileClicked(TwitterApplication.getTwitterClient().getAuthenticatedUser());
         }
 
         return super.onOptionsItemSelected(item);
@@ -123,9 +124,9 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
     }
 
     @Override
-    public void onProfileClicked(long user_id) {
+    public void onProfileClicked(User user) {
         Intent intent = new Intent(this, ProfileActivity.class);
-        intent.putExtra("user_id", user_id);
+        intent.putExtra("user", user);
         startActivityForResult(intent, 10);
 
         overridePendingTransition(R.layout.enter_from_right, R.layout.stay_in_place);

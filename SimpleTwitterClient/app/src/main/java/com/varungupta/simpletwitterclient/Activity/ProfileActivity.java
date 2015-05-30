@@ -1,21 +1,22 @@
 package com.varungupta.simpletwitterclient.Activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.varungupta.simpletwitterclient.Fragments.TweetsListFragment;
 import com.varungupta.simpletwitterclient.Model.Tweet;
+import com.varungupta.simpletwitterclient.Model.User;
 import com.varungupta.simpletwitterclient.R;
 import com.varungupta.simpletwitterclient.TwitterApplication;
 
 public class ProfileActivity extends ActionBarActivity implements TweetsListFragment.ITweetsListFragmentListener{
 
-    long user_id;
+    User user;
     TweetsListFragment tweetsListFragment;
 
     @Override
@@ -23,12 +24,12 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user_id = getIntent().getExtras().getLong("user_id");
+        user = (User)getIntent().getExtras().getSerializable("user");
         tweetsListFragment = TweetsListFragment.GetInstance(
                 new TweetsListFragment.ITweetsGetter() {
                     @Override
                     public void getTweets(long max_id, AsyncHttpResponseHandler handler) {
-                        TwitterApplication.getTwitterClient().getUserTimeline(user_id, max_id, handler);
+                        TwitterApplication.getTwitterClient().getUserTimeline(user.id, max_id, handler);
                     }
                 },
                 this
@@ -86,9 +87,9 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
     }
 
     @Override
-    public void onProfileClicked(long user_id) {
+    public void onProfileClicked(User user) {
         Intent intent = new Intent(this, ProfileActivity.class);
-        intent.putExtra("user_id", user_id);
+        intent.putExtra("user", user);
         startActivityForResult(intent, 10);
 
         overridePendingTransition(R.layout.enter_from_right, R.layout.stay_in_place);

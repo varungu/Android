@@ -16,6 +16,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.varungupta.simpletwitterclient.Adapter.TweetsAdapter;
 import com.varungupta.simpletwitterclient.Model.Tweet;
+import com.varungupta.simpletwitterclient.Model.User;
 import com.varungupta.simpletwitterclient.R;
 
 import org.apache.http.Header;
@@ -31,7 +32,7 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.Tweets
     // Listener for click on reply
     public interface ITweetsListFragmentListener {
         void onReplyClicked(String usersInfo, long in_reply_to_status_id);
-        void onProfileClicked(long user_id);
+        void onProfileClicked(User user);
     }
 
     // Interface to get tweets
@@ -126,8 +127,8 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.Tweets
     }
 
     @Override
-    public void onProfileClicked(long user_id) {
-        this.listener.onProfileClicked(user_id);
+    public void onProfileClicked(User user) {
+        this.listener.onProfileClicked(user);
     }
 
     public void addAll(List<Tweet> tweets, boolean clearExisting) {
