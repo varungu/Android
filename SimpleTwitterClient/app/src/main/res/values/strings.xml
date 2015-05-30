@@ -14,4 +14,5 @@
     <string name="title_activity_compose">ComposeActivity</string>
     <string name="tv_compose_tweet_hint">What\'s happening?</string>
     <string name="btn_compose_tweet">Tweet</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 </resources>

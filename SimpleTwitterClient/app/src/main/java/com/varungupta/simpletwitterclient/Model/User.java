@@ -15,6 +15,8 @@ public class User {
     public String profile_image_url;
     @Column(name = "user_id_str")
     public String id_str;
+    @Column(name = "user_id")
+    public long id;
     @Column(name = "user_screen_name")
     public String screen_name;
 
@@ -89,6 +91,7 @@ public class User {
             this.name = user.getString("name");
             this.profile_image_url = user.getString("profile_image_url");
             this.id_str = user.getString("id_str");
+            this.id = user.getLong("id");
             this.screen_name = "@" + user.getString("screen_name");
 
         } catch (JSONException e) {

@@ -43,13 +43,20 @@
         <activity
             android:name=".Activity.TimelineActivity"
             android:label="@string/title_activity_timeline"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
         </activity>
         <activity
             android:name=".Activity.ComposeActivity"
             android:label="@string/title_activity_compose"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".Activity.ProfileActivity"
+            android:label="@string/title_activity_profile" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activity.TimelineActivity" />

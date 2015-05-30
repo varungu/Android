@@ -9,10 +9,9 @@
         android:icon="@drawable/compose_new"
         app:showAsAction="always" />
     <item
-        android:id="@+id/miActionProgress"
-        android:title="Loading..."
-        android:visible="false"
+        android:id="@+id/action_me"
+        android:title="Me"
         android:orderInCategory="100"
         app:showAsAction="always"
-        app:actionLayout="@layout/action_view_progress" />
+        android:icon="@drawable/me" />
 </menu>
