@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.varungupta.simpletwitterclient.Fragments.ProfileViewFragment;
 import com.varungupta.simpletwitterclient.Fragments.TweetsListFragment;
 import com.varungupta.simpletwitterclient.Model.Tweet;
 import com.varungupta.simpletwitterclient.Model.User;
@@ -17,7 +18,7 @@ import com.varungupta.simpletwitterclient.TwitterApplication;
 public class ProfileActivity extends ActionBarActivity implements TweetsListFragment.ITweetsListFragmentListener{
 
     User user;
-    TweetsListFragment tweetsListFragment;
+    ProfileViewFragment profileViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +26,9 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
         setContentView(R.layout.activity_profile);
 
         user = (User)getIntent().getExtras().getSerializable("user");
-        tweetsListFragment = TweetsListFragment.GetInstance(
-                new TweetsListFragment.ITweetsGetter() {
+        profileViewFragment = ProfileViewFragment.GetInstance(
+                user,
+                new ProfileViewFragment.ITweetsGetter() {
                     @Override
                     public void getTweets(long max_id, AsyncHttpResponseHandler handler) {
                         TwitterApplication.getTwitterClient().getUserTimeline(user.id, max_id, handler);
@@ -37,7 +39,7 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flProfile, tweetsListFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flProfile, profileViewFragment).commit();
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
         if (requestCode == 20) {
             if(resultCode == RESULT_OK){
                 Tweet tweet = (Tweet)data.getSerializableExtra("tweet");
-                tweetsListFragment.add(0, tweet);
+                profileViewFragment.add(0, tweet);
             }
         }
     }

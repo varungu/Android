@@ -52,7 +52,6 @@ public class TweetsListFragment extends Fragment implements TweetsAdapter.Tweets
     public ITweetsListFragmentListener listener;
     public ITweetsGetter tweetsGetter;
 
-
     public static TweetsListFragment GetInstance(ITweetsGetter tweetsGetter, ITweetsListFragmentListener listener){
         // Create new fragment
         TweetsListFragment fragment = new TweetsListFragment();
