@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.varungupta.simpletwitterclient.Fragments.ProfileViewFragment;
@@ -55,6 +56,8 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
                 this
         );
 
+        TextView tv_compose_actionbar_char_count = (TextView) findViewById(R.id.tv_compose_actionbar_char_count);
+        tv_compose_actionbar_char_count.setText(user.name);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flProfile, profileViewFragment).commit();
