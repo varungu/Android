@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.varungupta.simpletwitterclient.Fragments.ProfileViewFragment;
@@ -24,6 +27,21 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // Set action bar
+        Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
+        setSupportActionBar(actionBar);
+
+        ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                setResult(RESULT_CANCELED, returnIntent);
+                finish();
+                overridePendingTransition(R.layout.stay_in_place, R.layout.exit_to_right);
+            }
+        });
 
         user = (User)getIntent().getExtras().getSerializable("user");
         profileViewFragment = ProfileViewFragment.GetInstance(
@@ -56,8 +74,8 @@ public class ProfileActivity extends ActionBarActivity implements TweetsListFrag
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_compose) {
+            startComposeActivity("", 0);
             return true;
         }
 
