@@ -1,41 +1,102 @@
 package com.varungupta.simpletwitterclient.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
+import com.varungupta.simpletwitterclient.Adapter.GalleryImageAdapter;
 import com.varungupta.simpletwitterclient.Model.Tweet;
 import com.varungupta.simpletwitterclient.Model.User;
+import com.varungupta.simpletwitterclient.PhotoGallery.PhotoGalleryAsyncLoader;
+import com.varungupta.simpletwitterclient.PhotoGallery.PhotoItem;
 import com.varungupta.simpletwitterclient.R;
 import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
 import com.varungupta.simpletwitterclient.TwitterApplication;
 
 import org.apache.http.Header;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ComposeActivity extends ActionBarActivity {
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ComposeActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<List<PhotoItem>> {
 
     TwitterClient twitterClient;
     EditText et_compose_tweet;
     long in_reply_to_status_id;
+    ArrayList<PhotoItem> galleryImages;
+    GalleryImageAdapter galleryImageAdapter;
+    String base64Media;
 
+    private String encodeImage2(Uri path)  {
+        try {
+            InputStream inputStream = new FileInputStream(path.toString());//You can get an inputStream using any IO API
+            byte[] bytes;
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            try {
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bytes = output.toByteArray();
+            String encodedString = Base64.encodeToString(bytes, Base64.DEFAULT);
+            return encodedString;
+        }
+        catch (FileNotFoundException ex){
+            Log.e("image not found", ex.toString());
+        }
+
+        return null;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
+
+        base64Media = null;
+        final ImageView iv_selected_image = (ImageView)findViewById(R.id.iv_selected_image);
+        final GridView gvGalleryImages = (GridView) findViewById(R.id.glGallery);
+        galleryImages = new ArrayList<>();
+        galleryImageAdapter = new GalleryImageAdapter(this, galleryImages);
+        gvGalleryImages.setAdapter(galleryImageAdapter);
+        gvGalleryImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Picasso.with(getBaseContext()).load("file:" + galleryImages.get(position).getFullImageUri()).into(iv_selected_image);
+                gvGalleryImages.setVisibility(View.GONE);
+                base64Media = encodeImage2(galleryImages.get(position).getFullImageUri());
+            }
+        });
 
         in_reply_to_status_id = getIntent().getExtras().getLong("in_reply_to_status_id");
         Toolbar actionBar = (Toolbar) findViewById(R.id.actionBar);
@@ -91,26 +152,91 @@ public class ComposeActivity extends ActionBarActivity {
         btn_compose_tweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text = et_compose_tweet.getText().toString();
-                twitterClient.addTweet(text, in_reply_to_status_id, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Tweet newTweet = Tweet.CreateTweet(response);
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("tweet",newTweet);
-                        setResult(RESULT_OK, returnIntent);
-                        finish();
-                        overridePendingTransition(R.layout.stay_in_place, R.layout.exit_to_bottom);
-                    }
+                final String text = et_compose_tweet.getText().toString();
+                if (base64Media == null) {
+                    tweet(text, 0);
+                }
+                else {
+                    twitterClient.uploadMedia(base64Media, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+                                long media_id = response.getLong("media_id");
+                                tweet(text, media_id);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Toast.makeText(getBaseContext(), "Failed to add tweet", Toast.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            Toast.makeText(getBaseContext(), "Failed to add tweet", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            Toast.makeText(getBaseContext(), "Failed to add tweet", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
+
+        getSupportLoaderManager().initLoader(0, null, this);
+    }
+
+    private void tweet(String message, long media_id){
+        twitterClient.addTweet(message, in_reply_to_status_id, media_id, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Tweet newTweet = Tweet.CreateTweet(response);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("tweet",newTweet);
+                setResult(RESULT_OK, returnIntent);
+                finish();
+                overridePendingTransition(R.layout.stay_in_place, R.layout.exit_to_bottom);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Toast.makeText(getBaseContext(), "Failed to add tweet", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Toast.makeText(getBaseContext(), "Failed to add tweet", Toast.LENGTH_LONG).show();
             }
         });
     }
+    /**
+     * Loader Handlers for loading the photos in the background.
+     */
+    @Override
+    public Loader<List<PhotoItem>> onCreateLoader(int id, Bundle args) {
+        // This is called when a new Loader needs to be created.  This
+        // sample only has one Loader with no arguments, so it is simple.
+        return new PhotoGalleryAsyncLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<PhotoItem>> loader, List<PhotoItem> data) {
+
+        // Set the new data in the mAdapter.
+        galleryImages.clear();
+
+        for(int i = 0; i < data.size();i++){
+            PhotoItem item = data.get(i);
+            galleryImages.add(item);
+        }
+
+        galleryImageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<PhotoItem>> loader) {
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

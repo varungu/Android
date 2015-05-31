@@ -74,7 +74,7 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(apiUrl, params, handler);
     }
 
-    public void addTweet(String status, long in_reply_to_status_id, AsyncHttpResponseHandler handler) {
+    public void addTweet(String status, long in_reply_to_status_id, long media_ids, AsyncHttpResponseHandler handler) {
         //POST
         // https://api.twitter.com/1.1/statuses/update.json?status=Maybe%20he%27l
         String apiUrl = getApiUrl("statuses/update.json");
@@ -85,6 +85,11 @@ public class TwitterClient extends OAuthBaseClient {
         if (in_reply_to_status_id != 0) {
             params.put("in_reply_to_status_id", in_reply_to_status_id);
         }
+
+        if (media_ids != 0) {
+            params.put("media_ids", media_ids);
+        }
+
         client.post(apiUrl, params, handler);
     }
 
@@ -98,6 +103,17 @@ public class TwitterClient extends OAuthBaseClient {
                 authenticatedUser = new User(response);
             }
         });
+    }
+
+    public void uploadMedia(String base64Media, AsyncHttpResponseHandler handler) {
+        //POST
+        // https://upload.twitter.com/1.1/media/upload.json?media_data=xxx
+        String apiUrl = "https://upload.twitter.com/1.1/media/upload.json";
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("media_data", base64Media);
+
+        client.post(apiUrl, params, handler);
     }
 
     public void reTweet(String id, AsyncHttpResponseHandler handler) {
