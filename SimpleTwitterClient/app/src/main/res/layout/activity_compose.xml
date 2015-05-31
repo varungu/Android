@@ -115,6 +115,17 @@
         android:layout_below="@+id/et_compose_tweet"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"/>
+    <ImageView
+        android:id="@+id/iv_cancel_selected_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:layout_alignRight="@+id/iv_selected_image"
+        android:layout_alignTop="@+id/iv_selected_image"
+        android:src="@drawable/cancel"
+        android:visibility="gone"
+        android:onClick="removeSelectedImage"/>
 
     <GridView
         android:id="@+id/glGallery"
@@ -123,6 +134,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:numColumns="3">
+        android:numColumns="3"
+        android:background="#000000">
     </GridView>
 </RelativeLayout>

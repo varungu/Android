@@ -59,6 +59,7 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
     String base64Media;
     ImageView iv_selected_image;
     GridView gvGalleryImages;
+    ImageView iv_remove_selected_image;
 
     public final String APP_TAG = "Simple Twitter Client";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1039;
@@ -89,8 +90,10 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
     }
 
     public void onPictureSelected(Uri uri){
+        iv_selected_image.setVisibility(View.VISIBLE);
         Picasso.with(getBaseContext()).load("file:" + uri.toString()).into(iv_selected_image);
         gvGalleryImages.setVisibility(View.GONE);
+        iv_remove_selected_image.setVisibility(View.VISIBLE);
         base64Media = encodeImage2(uri);
     }
     // Returns the Uri for a photo stored on disk given the fileName
@@ -139,6 +142,7 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
 
         base64Media = null;
         iv_selected_image = (ImageView)findViewById(R.id.iv_selected_image);
+        iv_remove_selected_image = (ImageView) findViewById(R.id.iv_cancel_selected_image);
         gvGalleryImages = (GridView) findViewById(R.id.glGallery);
         galleryImages = new ArrayList<>();
         galleryImageAdapter = new GalleryImageAdapter(this, galleryImages);
@@ -286,7 +290,7 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
         galleryImages.add(new PhotoItem(null, null));
 
         // Add rest of the items
-        for(int i = 0; i < data.size();i++){
+        for(int i = data.size() - 1; i >= 0; i--){
             PhotoItem item = data.get(i);
             galleryImages.add(item);
         }
@@ -328,5 +332,13 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
         setResult(RESULT_CANCELED, returnIntent);
         finish();
         overridePendingTransition(R.layout.stay_in_place, R.layout.exit_to_bottom);
+    }
+
+    public void removeSelectedImage(View view) {
+        iv_selected_image.setVisibility(View.GONE);
+        iv_selected_image.setImageResource(0);
+        gvGalleryImages.setVisibility(View.VISIBLE);
+        iv_remove_selected_image.setVisibility(View.GONE);
+        base64Media = null;
     }
 }
