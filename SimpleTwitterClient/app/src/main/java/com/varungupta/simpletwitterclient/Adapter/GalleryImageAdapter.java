@@ -38,8 +38,14 @@ public class GalleryImageAdapter extends ArrayAdapter<PhotoItem> {
             viewHolder = (GalleryImageViewHolder)convertView.getTag();
         }
 
-        viewHolder.ivImage.setImageResource(0);
-        Picasso.with(getContext()).load("file:" + photoItem.getThumbnailUri().toString()).into(viewHolder.ivImage);
+        if (position == 0) {
+            // Camera
+            viewHolder.ivImage.setImageResource(R.drawable.camera_128);
+        }
+        else {
+            viewHolder.ivImage.setImageResource(0);
+            Picasso.with(getContext()).load("file:" + photoItem.getThumbnailUri().toString()).into(viewHolder.ivImage);
+        }
 
         return convertView;
     }

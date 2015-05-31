@@ -3,6 +3,8 @@ package com.varungupta.simpletwitterclient.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
@@ -30,6 +32,7 @@ import com.varungupta.simpletwitterclient.Model.User;
 import com.varungupta.simpletwitterclient.PhotoGallery.PhotoGalleryAsyncLoader;
 import com.varungupta.simpletwitterclient.PhotoGallery.PhotoItem;
 import com.varungupta.simpletwitterclient.R;
+import com.varungupta.simpletwitterclient.RandomStringUtils.RandomStringUtils;
 import com.varungupta.simpletwitterclient.RestClient.TwitterClient;
 import com.varungupta.simpletwitterclient.TwitterApplication;
 
@@ -38,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -53,6 +57,56 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
     ArrayList<PhotoItem> galleryImages;
     GalleryImageAdapter galleryImageAdapter;
     String base64Media;
+    ImageView iv_selected_image;
+    GridView gvGalleryImages;
+
+    public final String APP_TAG = "Simple Twitter Client";
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1039;
+    public String photoFileName;
+
+
+    public void onLaunchCamera() {
+        String ext = "jpg";
+        photoFileName = String.format("%s.%s", RandomStringUtils.randomAlphanumeric(8), ext);
+
+        // create Intent to take a picture and return control to the calling application
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File("/sdcard/tmp"))); // set the image file name
+        // Start the image capture intent to take photo
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Uri takenPhotoUri = Uri.parse("/sdcard/tmp");
+                onPictureSelected(takenPhotoUri);
+            } else { // Result was a failure
+                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void onPictureSelected(Uri uri){
+        Picasso.with(getBaseContext()).load("file:" + uri.toString()).into(iv_selected_image);
+        gvGalleryImages.setVisibility(View.GONE);
+        base64Media = encodeImage2(uri);
+    }
+    // Returns the Uri for a photo stored on disk given the fileName
+    public Uri getPhotoFileUri(String fileName) {
+        // Get safe storage directory for photos
+        File mediaStorageDir = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_TAG);
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+            Log.d(APP_TAG, "failed to create directory");
+        }
+
+        // Return the file target for the photo based on filename
+        return Uri.parse(mediaStorageDir.getPath() + File.separator + fileName);
+    }
 
     private String encodeImage2(Uri path)  {
         try {
@@ -84,17 +138,21 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
         setContentView(R.layout.activity_compose);
 
         base64Media = null;
-        final ImageView iv_selected_image = (ImageView)findViewById(R.id.iv_selected_image);
-        final GridView gvGalleryImages = (GridView) findViewById(R.id.glGallery);
+        iv_selected_image = (ImageView)findViewById(R.id.iv_selected_image);
+        gvGalleryImages = (GridView) findViewById(R.id.glGallery);
         galleryImages = new ArrayList<>();
         galleryImageAdapter = new GalleryImageAdapter(this, galleryImages);
         gvGalleryImages.setAdapter(galleryImageAdapter);
         gvGalleryImages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Picasso.with(getBaseContext()).load("file:" + galleryImages.get(position).getFullImageUri()).into(iv_selected_image);
-                gvGalleryImages.setVisibility(View.GONE);
-                base64Media = encodeImage2(galleryImages.get(position).getFullImageUri());
+                if (position == 0) {
+                    // Handle click on camera
+                    onLaunchCamera();
+                }
+                else {
+                    onPictureSelected(galleryImages.get(position).getFullImageUri());
+                }
             }
         });
 
@@ -224,6 +282,10 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
         // Set the new data in the mAdapter.
         galleryImages.clear();
 
+        // Add item for camera
+        galleryImages.add(new PhotoItem(null, null));
+
+        // Add rest of the items
         for(int i = 0; i < data.size();i++){
             PhotoItem item = data.get(i);
             galleryImages.add(item);
