@@ -143,7 +143,7 @@ public class TimelineActivity extends ActionBarActivity implements TweetsListFra
 
     public class TweetsPagerAdapter extends FragmentPagerAdapter {
         TimelineActivity timelineActivity;
-        String[] tabsTitles = new String[]{"Home", "Notifications"};
+        String[] tabsTitles = new String[]{"Home", "Mentions"};
 
         public TweetsPagerAdapter(FragmentManager fragmentManager, TimelineActivity timelineActivity){
             super(fragmentManager);
