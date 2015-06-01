@@ -7,7 +7,7 @@ Attending CodePath Android Bootcamp. This repository contains all the projects t
 
 Twitter Client is an android app that allows a user to view his Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
 
-Time spent: 20 hours spent in total
+Time spent: 40 hours spent in total
 
 ## User Stories
 
@@ -23,6 +23,9 @@ The following **required** functionality is completed:
   * [x] User can click a “Compose” icon in the Action Bar on the top right
   * [x] User can then enter a new tweet and post this to twitter
   * [x] User is taken back to home timeline with **new tweet visible** in timeline
+  * [x] User can switch between Timeline and Mention views using tabs.
+  * [x] User can navigate to view their own profile
+  * [x] User can click on the profile image in any tweet to see another user's profile.
 
 The following **optional** features are implemented:
 
@@ -33,6 +36,7 @@ The following **optional** features are implemented:
 * [ ] User can tap a tweet to **open a detailed tweet view**
 * [x] User can **select "reply" from detail view to respond to a tweet**
 * [x] Improve the user interface and theme the app to feel "twitter branded"
+* [x] User can "reply" to any tweet on their home timeline
 
 The following **bonus** features are implemented:
 
@@ -45,9 +49,10 @@ The following **additional** features are implemented:
 * [x] Media is embedded in timeline
 * [x] Use custom actionbar to make app look like official twitter app
 * [x] User can follow people from timeline itself
-* [x] User can reply from timeline itself
-* [x] User can retweet from timeline itself
-* [x] User can mark tweet as favorite from timeline itself
+* [x] User can retweet from timeline
+* [x] User can mark tweet as favorite from timeline
+* [x] Display user's images from gallery in compose tweet view.
+* [x] User can tweet image from gallery or camera
 
 ## Video Walkthrough 
 
