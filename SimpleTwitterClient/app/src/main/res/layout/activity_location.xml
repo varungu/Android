@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.varungupta.simpletwitterclient.Activity.LocationActivity">
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:background="#FFFFFF">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/iv_compose_actionbar_cancel"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:src="@drawable/cancel"
+                android:padding="15dp"
+                android:contentDescription="@string/iv_timeline_actionbar_logo_description" />
+            <TextView
+                android:id="@+id/tv_compose_actionbar_char_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tag Location"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#55ACEE"
+                android:textSize="25sp"
+                android:layout_toRightOf="@+id/iv_compose_actionbar_cancel"
+                android:layout_toLeftOf="@+id/btn_compose_tweet"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignTop="@+id/iv_timeline_actionbar_logo"
+                android:layout_alignBottom="@+id/iv_timeline_actionbar_logo"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvLocation"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#FFFFFF"
+        android:layout_below="@id/actionBar"/>
+</RelativeLayout>

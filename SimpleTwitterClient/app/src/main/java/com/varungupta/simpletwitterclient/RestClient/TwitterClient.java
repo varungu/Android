@@ -74,7 +74,7 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(apiUrl, params, handler);
     }
 
-    public void addTweet(String status, long in_reply_to_status_id, long media_ids, AsyncHttpResponseHandler handler) {
+    public void addTweet(String status, long in_reply_to_status_id, long media_ids, Double lat, Double lon, AsyncHttpResponseHandler handler) {
         //POST
         // https://api.twitter.com/1.1/statuses/update.json?status=Maybe%20he%27l
         String apiUrl = getApiUrl("statuses/update.json");
@@ -88,6 +88,11 @@ public class TwitterClient extends OAuthBaseClient {
 
         if (media_ids != 0) {
             params.put("media_ids", media_ids);
+        }
+
+        if (lat != 0 && lon != 0) {
+            params.put("lat", lat);
+            params.put("long", lon);
         }
 
         client.post(apiUrl, params, handler);

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 import com.varungupta.simpletwitterclient.Adapter.GalleryImageAdapter;
+import com.varungupta.simpletwitterclient.Model.Location;
 import com.varungupta.simpletwitterclient.Model.Tweet;
 import com.varungupta.simpletwitterclient.Model.User;
 import com.varungupta.simpletwitterclient.PhotoGallery.PhotoGalleryAsyncLoader;
@@ -60,6 +61,8 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
     ImageView iv_selected_image;
     GridView gvGalleryImages;
     ImageView iv_remove_selected_image;
+    Location selectedLocation;
+    TextView tv_selected_location;
 
     public final String APP_TAG = "Simple Twitter Client";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1039;
@@ -85,6 +88,14 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
                 onPictureSelected(takenPhotoUri);
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == 50) {
+            if (resultCode == RESULT_OK) {
+                // Add location info here
+                selectedLocation = (Location)data.getSerializableExtra("location");
+                tv_selected_location.setText(selectedLocation.name);
+                tv_selected_location.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -141,6 +152,7 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
         setContentView(R.layout.activity_compose);
 
         base64Media = null;
+        tv_selected_location = (TextView) findViewById(R.id.tv_selected_location);
         iv_selected_image = (ImageView)findViewById(R.id.iv_selected_image);
         iv_remove_selected_image = (ImageView) findViewById(R.id.iv_cancel_selected_image);
         gvGalleryImages = (GridView) findViewById(R.id.glGallery);
@@ -153,8 +165,7 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
                 if (position == 0) {
                     // Handle click on camera
                     onLaunchCamera();
-                }
-                else {
+                } else {
                     onPictureSelected(galleryImages.get(position).getFullImageUri());
                 }
             }
@@ -217,8 +228,7 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
                 final String text = et_compose_tweet.getText().toString();
                 if (base64Media == null) {
                     tweet(text, 0);
-                }
-                else {
+                } else {
                     twitterClient.uploadMedia(base64Media, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -244,11 +254,36 @@ public class ComposeActivity extends ActionBarActivity implements LoaderManager.
             }
         });
 
+        ImageView ivCamera = (ImageView) findViewById(R.id.ivCamera);
+        ivCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (gvGalleryImages.isShown()) {
+                    gvGalleryImages.setVisibility(View.GONE);
+                }
+                else {
+                    gvGalleryImages.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        ImageView ivLocation = (ImageView) findViewById(R.id.ivLocation);
+        ivLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start location intent here
+                Intent intent = new Intent(getBaseContext(), LocationActivity.class);
+                startActivityForResult(intent, 50);
+
+                overridePendingTransition(R.layout.enter_from_right, R.layout.stay_in_place);
+            }
+        });
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
+
     private void tweet(String message, long media_id){
-        twitterClient.addTweet(message, in_reply_to_status_id, media_id, new JsonHttpResponseHandler() {
+        twitterClient.addTweet(message, in_reply_to_status_id, media_id, selectedLocation == null? 0:selectedLocation.latitude, selectedLocation == null? 0: selectedLocation.longitude, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Tweet newTweet = Tweet.CreateTweet(response);

@@ -126,15 +126,62 @@
         android:src="@drawable/cancel"
         android:visibility="gone"
         android:onClick="removeSelectedImage"/>
-
-    <GridView
-        android:id="@+id/glGallery"
+    <TextView
+        android:id="@+id/tv_selected_location"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/location_selected"
+        android:layout_below="@+id/iv_selected_image"
+        android:visibility="gone"
+        android:textSize="20dp"
+        android:textColor="#999999"
+        android:layout_marginTop="10dp"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:numColumns="3"
-        android:background="#000000">
-    </GridView>
+        android:layout_alignParentRight="true">
+        <GridView
+            android:id="@+id/glGallery"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:numColumns="3"
+            android:background="#000000">
+        </GridView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_above="@id/glGallery"
+            android:background="@drawable/background_line">
+            <ImageView android:id="@+id/ivLocation"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/location"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
+            <ImageView android:id="@+id/ivCamera"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/camera"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/ivLocation"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
 </RelativeLayout>
