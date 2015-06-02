@@ -48,6 +48,7 @@ The following **additional** features are implemented:
 * [x] User can mark tweet as favorite from timeline
 * [x] Display user's images from gallery in compose tweet view.
 * [x] User can tweet image from gallery or camera
+* [x] Use foursquare to get list of locations and allow user to add location to tweet.
 
 ## Video Walkthrough 
 
